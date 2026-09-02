@@ -1,0 +1,13 @@
+{
+  "name": "aleks-auto",
+  "version": "1.0.0",
+  "description": "Сайт Алекс-Авто (Экспресс-замена масла в Оренбурге)",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx serve -l 3000 .",
+    "preview": "npx serve -l 3000 ."
+  },
+  "keywords": ["aleks-auto", "landing"],
+  "author": "",
+  "license": "ISC"
+}
