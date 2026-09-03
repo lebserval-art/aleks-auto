@@ -1245,6 +1245,190 @@
     .brands-grid { grid-template-columns: repeat(2, 1fr) !important; }
     .brand-cards-grid { grid-template-columns: 1fr !important; }
   }
+
+  /* ─── MODAL POPUP (BOOKING) ─── */
+  .modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.82);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+  }
+  .modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+  .modal-container {
+    background: var(--bg2, #141414);
+    border: 1px solid rgba(232, 122, 29, 0.35);
+    border-radius: 6px;
+    width: 100%;
+    max-width: 480px;
+    max-height: 92vh;
+    overflow-y: auto;
+    position: relative;
+    padding: 32px 28px;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.8), 0 0 40px rgba(232, 122, 29, 0.15);
+    transform: translateY(20px) scale(0.97);
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .modal-overlay.active .modal-container {
+    transform: translateY(0) scale(1);
+  }
+  .modal-close {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    background: transparent;
+    border: none;
+    color: var(--muted, #7A7470);
+    font-size: 1.8rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 6px;
+    transition: color 0.2s, transform 0.2s;
+  }
+  .modal-close:hover {
+    color: var(--oil, #E87A1D);
+    transform: scale(1.1);
+  }
+  .modal-header {
+    margin-bottom: 22px;
+    padding-right: 24px;
+  }
+  .modal-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.1rem;
+    letter-spacing: 0.04em;
+    color: var(--white, #fff);
+    line-height: 1.1;
+    margin-bottom: 6px;
+  }
+  .modal-subtitle {
+    font-size: 0.82rem;
+    color: var(--muted, #7A7470);
+    line-height: 1.5;
+  }
+  .modal-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+  .modal-field label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted, #7A7470);
+  }
+  .modal-field input,
+  .modal-field select,
+  .modal-field textarea {
+    background: var(--bg3, #1A1A1A);
+    border: 1px solid var(--border, rgba(255,255,255,0.08));
+    border-radius: 4px;
+    padding: 12px 14px;
+    color: var(--white, #fff);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.88rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .modal-field input:focus,
+  .modal-field select:focus,
+  .modal-field textarea:focus {
+    border-color: var(--oil, #E87A1D);
+    box-shadow: 0 0 0 2px rgba(232, 122, 29, 0.2);
+  }
+  .modal-field textarea {
+    resize: vertical;
+    min-height: 54px;
+  }
+  .modal-submit {
+    width: 100%;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.84rem;
+    letter-spacing: 0.08em;
+    padding: 15px 20px;
+  }
+  .modal-submit:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+  }
+  .btn-spinner {
+    display: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  .modal-note {
+    font-size: 0.68rem;
+    color: var(--muted, #7A7470);
+    text-align: center;
+    margin-top: 10px;
+    line-height: 1.4;
+  }
+  .modal-error {
+    background: rgba(232, 74, 29, 0.12);
+    border: 1px solid #E84A1D;
+    color: #ff8866;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 0.78rem;
+    margin-top: 10px;
+    text-align: center;
+  }
+  .modal-success {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 30px 10px 10px;
+    gap: 14px;
+  }
+  .modal-success .success-icon {
+    font-size: 3.2rem;
+    line-height: 1;
+  }
+  .modal-success .success-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    letter-spacing: 0.04em;
+    color: var(--white, #fff);
+    line-height: 1.1;
+  }
+  .modal-success .success-desc {
+    font-size: 0.88rem;
+    color: var(--muted, #7A7470);
+    line-height: 1.6;
+    max-width: 340px;
+  }
+  .modal-done-btn {
+    margin-top: 10px;
+    padding: 12px 32px;
+    cursor: pointer;
+  }
 </style>
 </head>
 <body>
@@ -1874,6 +2058,72 @@
   <span class="footer-copy">Политика конфиденциальности</span>
 </div>
 
+
+<!-- POPUP MODAL BOOKING -->
+<div class="modal-overlay" id="booking-modal" aria-hidden="true">
+  <div class="modal-container" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <button type="button" class="modal-close" id="modal-close-btn" aria-label="Закрыть окно">&times;</button>
+    
+    <div id="modal-form-view">
+      <div class="modal-header">
+        <div class="modal-title" id="modal-title">Быстрая запись</div>
+        <div class="modal-subtitle">Оставьте номер — перезвоним за 15 минут для подтверждения времени</div>
+      </div>
+
+      <form id="popup-booking-form">
+        <div class="modal-field">
+          <label for="m-name">Имя *</label>
+          <input type="text" id="m-name" name="name" placeholder="Как к вам обращаться?" required>
+        </div>
+
+        <div class="modal-field">
+          <label for="m-phone">Телефон *</label>
+          <input type="tel" id="m-phone" name="phone" placeholder="+7 (___) ___-__-__" required>
+        </div>
+
+        <div class="modal-field">
+          <label for="m-location">Пункт обслуживания *</label>
+          <select id="m-location" name="location" required>
+            <option value="">— Выберите точку —</option>
+            <option value="пр. Гагарина, 58/1В (ТРЦ Армада 2)">пр. Гагарина, 58/1В (ТРЦ Армада 2)</option>
+            <option value="ул. Салмышская, 71 ст3 (ТРЦ «Кит»)">ул. Салмышская, 71 ст3 (ТРЦ «Кит»)</option>
+          </select>
+        </div>
+
+        <div class="modal-field">
+          <label for="m-service">Услуга / комментарий</label>
+          <select id="m-service" name="service" style="margin-bottom:8px;">
+            <option value="">— Выберите услугу —</option>
+            <option value="Замена моторного масла">Замена моторного масла (0 ₽ при покупке масла)</option>
+            <option value="Замена масла в АКПП">Замена масла в АКПП</option>
+            <option value="Замена масла в МКПП">Замена масла в МКПП</option>
+            <option value="Замена жидкости ГУР">Замена жидкости ГУР</option>
+            <option value="Замена редукторного масла">Замена редукторного масла</option>
+            <option value="Замена свечей зажигания">Замена свечей зажигания</option>
+            <option value="Замена тормозных колодок">Замена тормозных колодок</option>
+            <option value="Другое">Другое / диагностика</option>
+          </select>
+          <textarea id="m-comment" name="comment" rows="2" placeholder="Марка авто или пожелания (необязательно)"></textarea>
+        </div>
+
+        <button type="submit" class="btn-primary modal-submit" id="m-submit-btn">
+          <span class="btn-spinner" id="m-spinner"></span>
+          <span class="btn-text" id="m-btn-text">Отправить заявку</span>
+        </button>
+        <div class="modal-error" id="m-error-msg" style="display:none;"></div>
+        <p class="modal-note">Нажимая кнопку, вы соглашаетесь с обработкой персональных данных</p>
+      </form>
+    </div>
+
+    <div id="modal-success-view" class="modal-success" style="display:none;">
+      <div class="success-icon">✅</div>
+      <div class="success-title">Заявка принята, скоро свяжемся!</div>
+      <div class="success-desc">Мастер свяжется с вами в течение 15 минут для подтверждения времени записи.</div>
+      <button type="button" class="btn-primary modal-done-btn" id="modal-done-btn">Отлично</button>
+    </div>
+  </div>
+</div>
+
 <!-- FLOATING CTA -->
 <a href="#booking" class="float-cta">Записаться →</a>
 
@@ -1948,6 +2198,150 @@
       nav.style.background = 'rgba(13,13,13,0.85)';
     }
   });
+
+  // ─── POPUP MODAL FUNCTIONALITY ───
+  const bookingModal = document.getElementById('booking-modal');
+  const modalCloseBtn = document.getElementById('modal-close-btn');
+  const modalDoneBtn = document.getElementById('modal-done-btn');
+  const popupForm = document.getElementById('popup-booking-form');
+  const mName = document.getElementById('m-name');
+  const mPhone = document.getElementById('m-phone');
+  const mLocation = document.getElementById('m-location');
+  const mService = document.getElementById('m-service');
+  const mComment = document.getElementById('m-comment');
+  const mSubmitBtn = document.getElementById('m-submit-btn');
+  const mSpinner = document.getElementById('m-spinner');
+  const mBtnText = document.getElementById('m-btn-text');
+  const mErrorMsg = document.getElementById('m-error-msg');
+  const modalFormView = document.getElementById('modal-form-view');
+  const modalSuccessView = document.getElementById('modal-success-view');
+
+  function openBookingModal(initialService) {
+    if (!bookingModal) return;
+    if (initialService && mService) {
+      for (let i = 0; i < mService.options.length; i++) {
+        if (mService.options[i].value.toLowerCase().includes(initialService.toLowerCase())) {
+          mService.selectedIndex = i;
+          break;
+        }
+      }
+    }
+    modalFormView.style.display = 'block';
+    modalSuccessView.style.display = 'none';
+    if (mErrorMsg) mErrorMsg.style.display = 'none';
+    bookingModal.classList.add('active');
+    bookingModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => { if (mName) mName.focus(); }, 150);
+  }
+
+  function closeBookingModal() {
+    if (!bookingModal) return;
+    bookingModal.classList.remove('active');
+    bookingModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeBookingModal);
+  if (modalDoneBtn) modalDoneBtn.addEventListener('click', closeBookingModal);
+
+  // Close on overlay click outside container
+  if (bookingModal) {
+    bookingModal.addEventListener('click', function(e) {
+      if (e.target === bookingModal) {
+        closeBookingModal();
+      }
+    });
+  }
+
+  // Close on Escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && bookingModal && bookingModal.classList.contains('active')) {
+      closeBookingModal();
+    }
+  });
+
+  // Intercept all booking buttons/links across the site
+  document.addEventListener('click', function(e) {
+    const trigger = e.target.closest('a[href="#booking"], .float-cta, .nav-cta, .btn-primary[href="#booking"], [data-open-booking]');
+    if (trigger) {
+      e.preventDefault();
+      const serviceName = trigger.getAttribute('data-service') || '';
+      openBookingModal(serviceName);
+    }
+  });
+
+  // Phone input mask for modal
+  if (mPhone) {
+    mPhone.addEventListener('input', function(e) {
+      let v = e.target.value.replace(/\D/g, '');
+      if (v.startsWith('8')) v = '7' + v.slice(1);
+      if (!v.startsWith('7') && v.length > 0) v = '7' + v;
+      let f = '';
+      if (v.length > 0) f = '+' + v[0];
+      if (v.length > 1) f += ' (' + v.slice(1,4);
+      if (v.length >= 4) f += ') ' + v.slice(4,7);
+      if (v.length >= 7) f += '-' + v.slice(7,9);
+      if (v.length >= 9) f += '-' + v.slice(9,11);
+      e.target.value = f;
+    });
+  }
+
+  // Popup form submit via Telegram Bot backend (/api/booking)
+  if (popupForm) {
+    popupForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = mName.value.trim();
+      const phone = mPhone.value.trim();
+      const location = mLocation.value;
+      const service = mService ? mService.value : '';
+      const comment = mComment ? mComment.value.trim() : '';
+
+      if (!name) { shake('m-name'); return; }
+      if (phone.replace(/\D/g, '').length < 11) { shake('m-phone'); return; }
+      if (!location) { shake('m-location'); return; }
+
+      mSubmitBtn.disabled = true;
+      mSpinner.style.display = 'inline-block';
+      mBtnText.textContent = 'Отправка...';
+      if (mErrorMsg) mErrorMsg.style.display = 'none';
+
+      fetch('/api/booking', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: name,
+          phone: phone,
+          location: location,
+          service: service,
+          comment: comment
+        })
+      })
+      .then(function(res) {
+        if (!res.ok) throw new Error('Ошибка сервера при отправке');
+        return res.json();
+      })
+      .then(function(data) {
+        if (typeof ym === 'function') {
+          try { ym(99474451, 'reachGoal', 'lead_form'); } catch(err){}
+        }
+        modalFormView.style.display = 'none';
+        modalSuccessView.style.display = 'flex';
+        popupForm.reset();
+      })
+      .catch(function(err) {
+        if (mErrorMsg) {
+          mErrorMsg.textContent = 'Не удалось отправить заявку. Пожалуйста, позвоните нам по телефону.';
+          mErrorMsg.style.display = 'block';
+        }
+      })
+      .finally(function() {
+        mSubmitBtn.disabled = false;
+        mSpinner.style.display = 'none';
+        mBtnText.textContent = 'Отправить заявку';
+      });
+    });
+  }
 </script>
 
 <style>
