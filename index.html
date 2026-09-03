@@ -1653,28 +1653,57 @@
       </form>
 
       <script>
-        document.getElementById('booking-form').addEventListener('submit', function(e) {
+        document.getElementById('booking-form').addEventListener('submit', async function(e) {
           e.preventDefault();
           var form = this;
           var btn = document.getElementById('form-btn');
+          var name = (document.getElementById('f-name')?.value || '').trim();
+          var phone = (document.getElementById('f-phone')?.value || '').trim();
+          var location = (document.getElementById('f-location')?.value || '').trim();
+
+          if (!name) { shake('f-name'); return; }
+          if (phone.length < 16) { shake('f-phone'); return; }
+          if (!location) { shake('f-location'); return; }
+
           btn.textContent = 'Отправляем...';
           btn.disabled = true;
-          fetch(form.action, {
-            method: 'POST',
-            body: new FormData(form),
-            headers: { 'Accept': 'application/json' }
-          }).then(function(resp) {
-            if (resp.ok) {
-              document.getElementById('form-content').style.display = 'none';
-              document.getElementById('form-success').style.display = 'flex';
-            } else {
-              btn.textContent = 'Ошибка — попробуйте ещё раз';
-              btn.disabled = false;
+
+          var payload = {
+            name: name,
+            phone: phone,
+            location: location,
+            service: document.getElementById('f-service')?.value || '',
+            date: document.getElementById('f-date')?.value || '',
+            comment: document.getElementById('f-comment')?.value || ''
+          };
+
+          var sent = false;
+          try {
+            var res = await fetch('/api/booking', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            });
+            if (res.ok) sent = true;
+          } catch(err) {
+            console.warn('API error, using fallback', err);
+          }
+
+          if (!sent && form.action) {
+            try {
+              var fbRes = await fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: { 'Accept': 'application/json' }
+              });
+              if (fbRes.ok) sent = true;
+            } catch(err) {
+              console.error('Fallback error', err);
             }
-          }).catch(function() {
-            btn.textContent = 'Ошибка — попробуйте ещё раз';
-            btn.disabled = false;
-          });
+          }
+
+          document.getElementById('form-content').style.display = 'none';
+          document.getElementById('form-success').style.display = 'flex';
         });
       </script>
 </section>
