@@ -1444,7 +1444,66 @@
     padding: 12px 32px;
     cursor: pointer;
   }
+
+  .location-links {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+
+  .map-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 16px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: #e5e5e5;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+
+  .map-btn__icon {
+    flex-shrink: 0;
+    display: block;
+  }
+
+  .map-btn--yandex:hover {
+    background: rgba(252, 63, 29, 0.12);
+    border-color: rgba(252, 63, 29, 0.4);
+    color: #ffffff;
+    transform: translateY(-1px);
+  }
+
+  .map-btn--2gis:hover {
+    background: rgba(0, 181, 23, 0.12);
+    border-color: rgba(0, 181, 23, 0.4);
+    color: #ffffff;
+    transform: translateY(-1px);
+  }
+
+@media (max-width: 768px) { h1, h2, .brands-title { font-size: clamp(22px, 5.5vw, 32px) !important; word-break: normal; } }
 </style>
+
+<style id="mobile-fix">
+  @media (max-width: 768px) {
+    * { word-wrap: break-word; }
+    h1, h2, h3, div, p, span {
+      font-size-adjust: none;
+    }
+  }
+  @media (max-width: 480px) {
+    h1, h2, [class*="title"], [class*="heading"] {
+      font-size: min(6.2vw, 28px) !important;
+      line-height: 1.15 !important;
+    }
+  }
+</style>
+
 </head>
 <body>
 
@@ -1892,13 +1951,21 @@
       <div class="location-info">🅿️ Бесплатная парковка ТРЦ</div>
       <div class="location-info">⭐ Яндекс: 5.0 · 2ГИС: 5.0</div>
       <a class="location-phone" href="tel:+73532424050">+7 (3532) 42-40-50</a>
-      <div style="display:flex; gap:10px; margin-top:20px; flex-wrap:wrap;">
-        <a href="https://yandex.ru/maps/org/aleks_avto/214096152339/" target="_blank" style="display:inline-flex; align-items:center; gap:8px; background:rgba(252,63,29,0.12); border:1px solid rgba(252,63,29,0.35); color:#FFFFFF; font-size:0.8rem; font-weight:600; padding:10px 16px; border-radius:4px; text-decoration:none; letter-spacing:0.02em;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><path d="M12 2C7.58 2 4 5.58 4 10C4 15.25 12 22 12 22C12 22 20 15.25 20 10C20 5.58 16.42 2 12 2Z" fill="#FC3F1D"/><path d="M12.8 7.2C13.8 7.2 14.5 7.8 14.5 8.7C14.5 9.5 14 10.1 13.2 10.4L15 13.5H13.4L11.8 10.7H11.2V13.5H9.8V7.2H12.8ZM11.2 9.5H12.6C13 9.5 13.2 9.2 13.2 8.8C13.2 8.4 13 8.2 12.5 8.2H11.2V9.5Z" fill="white"/></svg>
+      <div class="location-links">
+        <a href="https://yandex.ru/maps/org/aleks_avto/214096152339/" target="_blank" rel="noopener noreferrer" class="map-btn map-btn--yandex">
+          <svg class="map-btn__icon" viewBox="0 0 24 24" width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C7.58 2 4 5.58 4 10c0 5.25 8 12 8 12s8-6.75 8-12c0-4.42-3.58-8-8-8z" fill="#FC3F1D"/>
+            <circle cx="12" cy="10" r="5" fill="#FFFFFF"/>
+            <path d="M13.4 7h-1.6c-1.3 0-2.1.8-2.1 2 0 .9.5 1.5 1.2 1.8l-1.5 2.2h1.3l1.3-2h.3v2h1.1V7zm-1.1 3h-.5c-.6 0-1-.3-1-.9 0-.6.4-.9 1-.9h.5v1.8z" fill="#FC3F1D"/>
+          </svg>
           <span>Яндекс Карты</span>
         </a>
-        <a href="https://2gis.ru/orenburg/branches/6755936311984617/firm/70000001092837074/55.200194%2C51.774469" target="_blank" style="display:inline-flex; align-items:center; gap:8px; background:rgba(0,185,86,0.12); border:1px solid rgba(0,185,86,0.35); color:#FFFFFF; font-size:0.8rem; font-weight:600; padding:10px 16px; border-radius:4px; text-decoration:none; letter-spacing:0.02em;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><rect width="24" height="24" rx="5" fill="#00B956"/><path d="M6.5 15.5C6.5 13.5 8.5 12.2 10.5 11.2C12 10.4 12.8 9.7 12.8 8.7C12.8 7.6 11.8 6.8 10.5 6.8C9.2 6.8 8.2 7.6 8 8.8H6.2C6.5 6.6 8.2 5.2 10.5 5.2C12.8 5.2 14.8 6.7 14.8 8.7C14.8 10.2 13.8 11.3 12.2 12.2C10.5 13.1 8.8 14 8.5 15.2H15V17H6.5V15.5Z" fill="white"/><circle cx="17.5" cy="16" r="1.5" fill="#C5F500"/></svg>
+
+        <a href="https://2gis.ru/orenburg/branches/6755936311984617/firm/70000001092837074/55.200194%2C51.774469" target="_blank" rel="noopener noreferrer" class="map-btn map-btn--2gis">
+          <svg class="map-btn__icon" viewBox="0 0 24 24" width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="24" height="24" rx="6" fill="#00B517"/>
+            <path d="M7 8.2C7 6.4 8.4 5 10.2 5c1.8 0 3.2 1.4 3.2 3.2 0 1.2-.7 2.3-1.7 2.8l-2.4 1.2v.3h4.3v1.8H7.2v-1.6l3.3-1.7c.6-.3 1-.9 1-1.6 0-.8-.6-1.4-1.4-1.4s-1.4.6-1.4 1.4H7zm8.5 7.8c-.8 0-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5 1.5.7 1.5 1.5-.7 1.5-1.5 1.5z" fill="#FFFFFF"/>
+          </svg>
           <span>2ГИС</span>
         </a>
       </div>
@@ -1912,13 +1979,21 @@
       <div class="location-info">🅿️ Большая гостевая парковка</div>
       <div class="location-info">⭐ Яндекс: 5.0 (28 оценок) · 2ГИС: 5.0 (15 оценок)</div>
       <a class="location-phone" href="tel:+73532922050">+7 (3532) 92-20-50</a>
-      <div style="display:flex; gap:10px; margin-top:20px; flex-wrap:wrap;">
-        <a href="https://yandex.ru/maps/org/aleks_avto/144864995154/" target="_blank" style="display:inline-flex; align-items:center; gap:8px; background:rgba(252,63,29,0.12); border:1px solid rgba(252,63,29,0.35); color:#FFFFFF; font-size:0.8rem; font-weight:600; padding:10px 16px; border-radius:4px; text-decoration:none; letter-spacing:0.02em;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><path d="M12 2C7.58 2 4 5.58 4 10C4 15.25 12 22 12 22C12 22 20 15.25 20 10C20 5.58 16.42 2 12 2Z" fill="#FC3F1D"/><path d="M12.8 7.2C13.8 7.2 14.5 7.8 14.5 8.7C14.5 9.5 14 10.1 13.2 10.4L15 13.5H13.4L11.8 10.7H11.2V13.5H9.8V7.2H12.8ZM11.2 9.5H12.6C13 9.5 13.2 9.2 13.2 8.8C13.2 8.4 13 8.2 12.5 8.2H11.2V9.5Z" fill="white"/></svg>
+      <div class="location-links">
+        <a href="https://yandex.ru/maps/org/aleks_avto/144864995154/" target="_blank" rel="noopener noreferrer" class="map-btn map-btn--yandex">
+          <svg class="map-btn__icon" viewBox="0 0 24 24" width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C7.58 2 4 5.58 4 10c0 5.25 8 12 8 12s8-6.75 8-12c0-4.42-3.58-8-8-8z" fill="#FC3F1D"/>
+            <circle cx="12" cy="10" r="5" fill="#FFFFFF"/>
+            <path d="M13.4 7h-1.6c-1.3 0-2.1.8-2.1 2 0 .9.5 1.5 1.2 1.8l-1.5 2.2h1.3l1.3-2h.3v2h1.1V7zm-1.1 3h-.5c-.6 0-1-.3-1-.9 0-.6.4-.9 1-.9h.5v1.8z" fill="#FC3F1D"/>
+          </svg>
           <span>Яндекс Карты</span>
         </a>
-        <a href="https://2gis.ru/orenburg/firm/70000001109865935/55.179385%2C51.811593" target="_blank" style="display:inline-flex; align-items:center; gap:8px; background:rgba(0,185,86,0.12); border:1px solid rgba(0,185,86,0.35); color:#FFFFFF; font-size:0.8rem; font-weight:600; padding:10px 16px; border-radius:4px; text-decoration:none; letter-spacing:0.02em;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><rect width="24" height="24" rx="5" fill="#00B956"/><path d="M6.5 15.5C6.5 13.5 8.5 12.2 10.5 11.2C12 10.4 12.8 9.7 12.8 8.7C12.8 7.6 11.8 6.8 10.5 6.8C9.2 6.8 8.2 7.6 8 8.8H6.2C6.5 6.6 8.2 5.2 10.5 5.2C12.8 5.2 14.8 6.7 14.8 8.7C14.8 10.2 13.8 11.3 12.2 12.2C10.5 13.1 8.8 14 8.5 15.2H15V17H6.5V15.5Z" fill="white"/><circle cx="17.5" cy="16" r="1.5" fill="#C5F500"/></svg>
+
+        <a href="https://2gis.ru/orenburg/firm/70000001109865935/55.179385%2C51.811593" target="_blank" rel="noopener noreferrer" class="map-btn map-btn--2gis">
+          <svg class="map-btn__icon" viewBox="0 0 24 24" width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="24" height="24" rx="6" fill="#00B517"/>
+            <path d="M7 8.2C7 6.4 8.4 5 10.2 5c1.8 0 3.2 1.4 3.2 3.2 0 1.2-.7 2.3-1.7 2.8l-2.4 1.2v.3h4.3v1.8H7.2v-1.6l3.3-1.7c.6-.3 1-.9 1-1.6 0-.8-.6-1.4-1.4-1.4s-1.4.6-1.4 1.4H7zm8.5 7.8c-.8 0-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5 1.5.7 1.5 1.5-.7 1.5-1.5 1.5z" fill="#FFFFFF"/>
+          </svg>
           <span>2ГИС</span>
         </a>
       </div>
