@@ -906,6 +906,9 @@
     padding: 36px;
     transition: all 0.2s;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
   }
 
   .location-card:hover {
@@ -950,7 +953,8 @@
 
   .location-phone {
     display: inline-block;
-    margin-top: 20px;
+    margin-top: auto;
+    padding-top: 20px;
     font-weight: 600;
     font-size: 0.95rem;
     color: var(--oil);
@@ -1191,6 +1195,17 @@
     .btn-primary { width: 100%; text-align: center; }
     .phone-buttons { width: 100%; }
     .phone-btn { width: 100%; }
+  }
+
+  /* ── 768px: mobile locations single column ── */
+  @media (max-width: 768px) {
+    .locations-grid {
+      grid-template-columns: 1fr !important;
+      gap: 16px !important;
+    }
+    .location-card {
+      padding: 24px 20px;
+    }
   }
 
   /* ── 600px: small mobile ── */
