@@ -1515,6 +1515,23 @@
  "url": "https://aleks-auto.com/"
  }
  </script>
+<style>
+.rev-modal { position: fixed; inset: 0; z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 16px; }
+.rev-modal__backdrop { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(4px); }
+.rev-modal__box { position: relative; background: #161616; border: 1px solid rgba(255,255,255,0.12); border-radius: 18px; padding: 28px 24px; max-width: 480px; width: 100%; box-shadow: 0 20px 40px rgba(0,0,0,0.6); z-index: 1; animation: revFadeIn 0.2s ease-out; }
+@keyframes revFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.rev-modal__close { position: absolute; top: 14px; right: 16px; background: none; border: none; font-size: 28px; line-height: 1; color: #888; cursor: pointer; transition: color 0.2s; }
+.rev-modal__close:hover { color: #fff; }
+.rev-modal__title { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 6px; padding-right: 24px; }
+.rev-modal__subtitle { font-size: 14px; color: #999; margin-bottom: 20px; }
+.rev-modal__branches { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+.rev-branch-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 14px 16px; }
+.rev-branch-card__title { font-size: 15px; font-weight: 600; color: #ff8533; margin-bottom: 2px; }
+.rev-branch-card__address { font-size: 12px; color: #777; margin-bottom: 12px; }
+.rev-branch-card__links { display: flex; gap: 10px; flex-wrap: wrap; }
+.rev-branch-card__links .map-btn { padding: 7px 12px; font-size: 13px; }
+.rev-modal__notice { font-size: 12.5px; line-height: 1.4; color: #ccc; background: rgba(255,133,51,0.08); border: 1px dashed rgba(255,133,51,0.3); border-radius: 10px; padding: 12px; text-align: center; }
+</style>
 </head>
 <body>
 
@@ -2455,5 +2472,66 @@
   }
 </style>
 
+
+<!-- Модальное окно выбора отзыва -->
+<div id="review-modal" class="rev-modal" style="display:none;">
+ <div class="rev-modal__backdrop" onclick="closeReviewModal()"></div>
+ <div class="rev-modal__box">
+ <button class="rev-modal__close" onclick="closeReviewModal()" aria-label="Закрыть">&times;</button>
+ <div class="rev-modal__title">Получите скидку 10% за отзыв</div>
+ <div class="rev-modal__subtitle">Выберите филиал, в котором вы обслуживались:</div>
+
+ <div class="rev-modal__branches">
+ <!-- Филиал 1 -->
+ <div class="rev-branch-card">
+ <div class="rev-branch-card__title">ТРК «Армада 2»</div>
+ <div class="rev-branch-card__address">Нежинское шоссе / ул. Гагарина</div>
+ <div class="rev-branch-card__links">
+ <a href="https://yandex.ru/maps/org/aleks_avto/214096152339/" target="_blank" rel="noopener noreferrer" class="map-btn map-btn--yandex">
+ <svg class="map-btn__icon" viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M12 2C7.58 2 4 5.58 4 10c0 5.25 8 12 8 12s8-6.75 8-12c0-4.42-3.58-8-8-8z" fill="#FC3F1D"/><circle cx="12" cy="10" r="5" fill="#FFFFFF"/><path d="M13.4 7h-1.6c-1.3 0-2.1.8-2.1 2 0 .9.5 1.5 1.2 1.8l-1.5 2.2h1.3l1.3-2h.3v2h1.1V7zm-1.1 3h-.5c-.6 0-1-.3-1-.9 0-.6.4-.9 1-.9h.5v1.8z" fill="#FC3F1D"/></svg>
+ <span>Яндекс Карты</span>
+ </a>
+ <a href="https://2gis.ru/orenburg/firm/70000001031388094" target="_blank" rel="noopener noreferrer" class="map-btn map-btn--2gis">
+ <svg class="map-btn__icon" viewBox="0 0 24 24" width="18" height="18" fill="none"><rect width="24" height="24" rx="6" fill="#00B517"/><path d="M7 8.2C7 6.4 8.4 5 10.2 5c1.8 0 3.2 1.4 3.2 3.2 0 1.2-.7 2.3-1.7 2.8l-2.4 1.2v.3h4.3v1.8H7.2v-1.6l3.3-1.7c.6-.3 1-.9 1-1.6 0-.8-.6-1.4-1.4-1.4s-1.4.6-1.4 1.4H7zm8.5 7.8c-.8 0-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5 1.5.7 1.5 1.5-.7 1.5-1.5 1.5z" fill="#FFFFFF"/></svg>
+ <span>2ГИС</span>
+ </a>
+ </div>
+ </div>
+
+ <!-- Филиал 2 -->
+ <div class="rev-branch-card">
+ <div class="rev-branch-card__title">ТРЦ «Кит»</div>
+ <div class="rev-branch-card__address">ул. Салмышская, 71 ст3</div>
+ <div class="rev-branch-card__links">
+ <a href="https://yandex.ru/maps/org/aleks_avto/144864995154/" target="_blank" rel="noopener noreferrer" class="map-btn map-btn--yandex">
+ <svg class="map-btn__icon" viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M12 2C7.58 2 4 5.58 4 10c0 5.25 8 12 8 12s8-6.75 8-12c0-4.42-3.58-8-8-8z" fill="#FC3F1D"/><circle cx="12" cy="10" r="5" fill="#FFFFFF"/><path d="M13.4 7h-1.6c-1.3 0-2.1.8-2.1 2 0 .9.5 1.5 1.2 1.8l-1.5 2.2h1.3l1.3-2h.3v2h1.1V7zm-1.1 3h-.5c-.6 0-1-.3-1-.9 0-.6.4-.9 1-.9h.5v1.8z" fill="#FC3F1D"/></svg>
+ <span>Яндекс Карты</span>
+ </a>
+ <a href="https://2gis.ru/orenburg/branches/6755936311984617/firm/70000001092837074" target="_blank" rel="noopener noreferrer" class="map-btn map-btn--2gis">
+ <svg class="map-btn__icon" viewBox="0 0 24 24" width="18" height="18" fill="none"><rect width="24" height="24" rx="6" fill="#00B517"/><path d="M7 8.2C7 6.4 8.4 5 10.2 5c1.8 0 3.2 1.4 3.2 3.2 0 1.2-.7 2.3-1.7 2.8l-2.4 1.2v.3h4.3v1.8H7.2v-1.6l3.3-1.7c.6-.3 1-.9 1-1.6 0-.8-.6-1.4-1.4-1.4s-1.4.6-1.4 1.4H7zm8.5 7.8c-.8 0-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5 1.5.7 1.5 1.5-.7 1.5-1.5 1.5z" fill="#FFFFFF"/></svg>
+ <span>2ГИС</span>
+ </a>
+ </div>
+ </div>
+ </div>
+
+ <div class="rev-modal__notice">
+ 🎁 Напишите отзыв и покажите мастеру-приемщику при расчете для получения скидки 10%
+ </div>
+ </div>
+</div>
+<script>
+function openReviewModal() {
+ const m = document.getElementById("review-modal");
+ if(m) m.style.display = "flex";
+}
+function closeReviewModal() {
+ const m = document.getElementById("review-modal");
+ if(m) m.style.display = "none";
+}
+document.addEventListener("keydown", function(e) {
+ if (e.key === "Escape") closeReviewModal();
+});
+</script>
 </body>
 </html>
