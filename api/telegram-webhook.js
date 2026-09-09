@@ -4,21 +4,16 @@ const LOCATIONS = {
 };
 
 const SERVICES = {
-  oil: 'Замена моторного масла',
-  akpp: 'Замена масла в АКПП',
-  mkpp: 'Замена масла в МКПП',
-  gur: 'Замена жидкости ГУР',
-  red: 'Замена редукторного масла',
-  svech: 'Замена свечей зажигания',
-  kolod: 'Замена тормозных колодок',
+  oil: 'Замена моторного масла', akpp: 'Замена масла в АКПП', mkpp: 'Замена масла в МКПП',
+  gur: 'Замена жидкости ГУР', red: 'Замена редукторного масла',
+  svech: 'Замена свечей зажигания', kolod: 'Замена тормозных колодок',
   other: 'Иное (уточню в сообщении)'
 };
 
-const DATES = {
-  today: 'Сегодня',
-  tomorrow: 'Завтра',
-  week: 'На этой неделе'
-};
+const DATES = { today: 'Сегодня', tomorrow: 'Завтра', week: 'На этой неделе' };
+
+const PHONE_TAG_BOOK = '#запись_на_телефон';
+const PHONE_TAG_CALL = '#звонок_на_телефон';
 
 function menuKeyboard() {
   return { inline_keyboard: [
@@ -26,20 +21,17 @@ function menuKeyboard() {
     [{ text: '📞 Заказать звонок', callback_data: 'menu:call' }]
   ]};
 }
-
 function locationKeyboard(prefix) {
   return { inline_keyboard: [
     [{ text: 'Армада 2', callback_data: `${prefix}:a` }],
     [{ text: 'КИТ', callback_data: `${prefix}:k` }]
   ]};
 }
-
 function serviceKeyboard(loc) {
   return { inline_keyboard: Object.entries(SERVICES).map(([code, label]) => [
     { text: label, callback_data: `bk:svc:${loc}:${code}` }
   ])};
 }
-
 function dateKeyboard(loc, svc) {
   return { inline_keyboard: Object.entries(DATES).map(([code, label]) => [
     { text: label, callback_data: `bk:date:${loc}:${svc}:${code}` }
@@ -48,9 +40,7 @@ function dateKeyboard(loc, svc) {
 
 async function tg(token, method, payload) {
   const res = await fetch(`https://api.telegram.org/bot${token}/${method}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
   });
   return res.json();
 }
@@ -70,6 +60,7 @@ export default async function handler(req, res) {
   try {
     const update = req.body;
 
+    // --- Обработка нажатий на инлайн-кнопки ---
     if (update?.callback_query) {
       const cq = update.callback_query;
       const chatId = cq.message.chat.id;
@@ -79,101 +70,118 @@ export default async function handler(req, res) {
       const fromUsername = cq.from?.username ? `@${cq.from.username}` : '—';
 
       await tg(TELEGRAM_BOT_TOKEN, 'answerCallbackQuery', { callback_query_id: cq.id });
-
       const parts = data.split(':');
 
       if (data === 'menu:book') {
         await tg(TELEGRAM_BOT_TOKEN, 'editMessageText', {
-          chat_id: chatId, message_id: messageId,
-          text: 'Выберите точку:',
+          chat_id: chatId, message_id: messageId, text: 'Выберите точку:',
           reply_markup: locationKeyboard('bk:loc')
         });
       } else if (data === 'menu:call') {
         await tg(TELEGRAM_BOT_TOKEN, 'editMessageText', {
-          chat_id: chatId, message_id: messageId,
-          text: 'Из какой точки перезвонить?',
+          chat_id: chatId, message_id: messageId, text: 'Из какой точки перезвонить?',
           reply_markup: locationKeyboard('call')
         });
       } else if (parts[0] === 'bk' && parts[1] === 'loc') {
         await tg(TELEGRAM_BOT_TOKEN, 'editMessageText', {
-          chat_id: chatId, message_id: messageId,
-          text: 'Выберите услугу:',
+          chat_id: chatId, message_id: messageId, text: 'Выберите услугу:',
           reply_markup: serviceKeyboard(parts[2])
         });
       } else if (parts[0] === 'bk' && parts[1] === 'svc') {
         await tg(TELEGRAM_BOT_TOKEN, 'editMessageText', {
-          chat_id: chatId, message_id: messageId,
-          text: 'На когда?',
+          chat_id: chatId, message_id: messageId, text: 'На когда?',
           reply_markup: dateKeyboard(parts[2], parts[3])
         });
       } else if (parts[0] === 'bk' && parts[1] === 'date') {
         const loc = parts[2], svc = parts[3], date = parts[4];
-        const locInfo = LOCATIONS[loc];
-        const svcLabel = SERVICES[svc] || svc;
-        const dateLabel = DATES[date] || date;
+        const locInfo = LOCATIONS[loc], svcLabel = SERVICES[svc] || svc, dateLabel = DATES[date] || date;
 
         await tg(TELEGRAM_BOT_TOKEN, 'editMessageText', {
           chat_id: chatId, message_id: messageId,
-          text: `✅ Заявка принята!\n\n📍 ${locInfo.name}\n🔧 ${svcLabel}\n📅 ${dateLabel}\n\nМы свяжемся с вами для подтверждения.`
+          text: `📍 ${locInfo.name}\n🔧 ${svcLabel}\n📅 ${dateLabel}\n\nПочти готово!`
         });
-
-        if (TELEGRAM_CHAT_ID) {
-          await tg(TELEGRAM_BOT_TOKEN, 'sendMessage', {
-            chat_id: TELEGRAM_CHAT_ID,
-            message_thread_id: TELEGRAM_TOPIC_ID ? parseInt(TELEGRAM_TOPIC_ID) : undefined,
-            text: `📝 *${fromName}* (${fromUsername}) заполнил заявку через бота\n\n📍 *Точка:* ${locInfo.name}\n🔧 *Услуга:* ${svcLabel}\n📅 *Дата:* ${dateLabel}`,
-            parse_mode: 'Markdown'
-          });
-        }
+        await tg(TELEGRAM_BOT_TOKEN, 'sendMessage', {
+          chat_id: chatId,
+          text: `Укажите номер телефона, чтобы мы могли связаться и подтвердить запись.\n\n${PHONE_TAG_BOOK} loc=${loc} svc=${svc} date=${date}`,
+          reply_markup: { force_reply: true, input_field_placeholder: '+7 ...' }
+        });
       } else if (parts[0] === 'call') {
         const locInfo = LOCATIONS[parts[1]];
-
         await tg(TELEGRAM_BOT_TOKEN, 'editMessageText', {
-          chat_id: chatId, message_id: messageId,
-          text: `✅ Заявка на звонок принята!\n\n📍 ${locInfo.name}\n\nМы позвоним вам в ближайшее время.`
+          chat_id: chatId, message_id: messageId, text: `📍 ${locInfo.name}\n\nПочти готово!`
         });
-
-        if (TELEGRAM_CHAT_ID) {
-          await tg(TELEGRAM_BOT_TOKEN, 'sendMessage', {
-            chat_id: TELEGRAM_CHAT_ID,
-            message_thread_id: TELEGRAM_TOPIC_ID ? parseInt(TELEGRAM_TOPIC_ID) : undefined,
-            text: `📞 *${fromName}* (${fromUsername}) оставил заявку на звонок с точки «${locInfo.name}»`,
-            parse_mode: 'Markdown'
-          });
-        }
+        await tg(TELEGRAM_BOT_TOKEN, 'sendMessage', {
+          chat_id: chatId,
+          text: `Укажите номер телефона, чтобы мы вам перезвонили.\n\n${PHONE_TAG_CALL} loc=${parts[1]}`,
+          reply_markup: { force_reply: true, input_field_placeholder: '+7 ...' }
+        });
       }
-
       return res.status(200).json({ ok: true });
     }
 
     const message = update?.message;
-    if (!message || !message.chat || !message.text) {
+    if (!message || !message.chat) return res.status(200).json({ ok: true });
+
+    const chatId = message.chat.id;
+    const fromName = [message.from?.first_name, message.from?.last_name].filter(Boolean).join(' ') || 'Без имени';
+    const fromUsername = message.from?.username ? `@${message.from.username}` : '—';
+
+    // --- Ответ на запрос телефона (ForceReply) ---
+    const repliedText = message.reply_to_message?.text || '';
+    if (message.text && (repliedText.includes(PHONE_TAG_BOOK) || repliedText.includes(PHONE_TAG_CALL))) {
+      const phone = message.text.trim();
+      const params = Object.fromEntries(
+        [...repliedText.matchAll(/(\w+)=(\w+)/g)].map(m => [m[1], m[2]])
+      );
+      const locInfo = LOCATIONS[params.loc];
+
+      if (repliedText.includes(PHONE_TAG_BOOK)) {
+        const svcLabel = SERVICES[params.svc] || params.svc;
+        const dateLabel = DATES[params.date] || params.date;
+        await tg(TELEGRAM_BOT_TOKEN, 'sendMessage', {
+          chat_id: chatId,
+          text: `✅ Заявка принята!\n\n📍 ${locInfo.name}\n🔧 ${svcLabel}\n📅 ${dateLabel}\n📞 ${phone}\n\nМы свяжемся с вами для подтверждения.`
+        });
+        if (TELEGRAM_CHAT_ID) {
+          await tg(TELEGRAM_BOT_TOKEN, 'sendMessage', {
+            chat_id: TELEGRAM_CHAT_ID,
+            message_thread_id: TELEGRAM_TOPIC_ID ? parseInt(TELEGRAM_TOPIC_ID) : undefined,
+            text: `📝 *${fromName}* (${fromUsername}) заполнил заявку через бота\n\n📍 *Точка:* ${locInfo.name}\n🔧 *Услуга:* ${svcLabel}\n📅 *Дата:* ${dateLabel}\n📞 *Телефон:* ${phone}`,
+            parse_mode: 'Markdown'
+          });
+        }
+      } else {
+        await tg(TELEGRAM_BOT_TOKEN, 'sendMessage', {
+          chat_id: chatId,
+          text: `✅ Заявка на звонок принята!\n\n📍 ${locInfo.name}\n📞 ${phone}\n\nМы позвоним вам в ближайшее время.`
+        });
+        if (TELEGRAM_CHAT_ID) {
+          await tg(TELEGRAM_BOT_TOKEN, 'sendMessage', {
+            chat_id: TELEGRAM_CHAT_ID,
+            message_thread_id: TELEGRAM_TOPIC_ID ? parseInt(TELEGRAM_TOPIC_ID) : undefined,
+            text: `📞 *${fromName}* (${fromUsername}) оставил заявку на звонок\n\n📍 *Точка:* ${locInfo.name}\n📞 *Телефон:* ${phone}`,
+            parse_mode: 'Markdown'
+          });
+        }
+      }
       return res.status(200).json({ ok: true });
     }
 
-    const chatId = message.chat.id;
+    if (!message.text) return res.status(200).json({ ok: true });
     const text = message.text.trim();
-    const fromName = [message.from?.first_name, message.from?.last_name].filter(Boolean).join(' ') || 'Без имени';
-    const fromUsername = message.from?.username ? `@${message.from.username}` : '—';
 
     if (text === '/start') {
       await tg(TELEGRAM_BOT_TOKEN, 'sendMessage', {
         chat_id: chatId,
-        text: "Здравствуйте! Это Алекс-Авто — экспресс-замена масла в Оренбурге за 30 минут.\n\n" +
-              "Напишите сюда, чем можем помочь, или выберите вариант ниже:",
+        text: "Здравствуйте! Это Алекс-Авто — экспресс-замена масла в Оренбурге за 30 минут.\n\nНапишите сюда, чем можем помочь, или выберите вариант ниже:",
         reply_markup: menuKeyboard()
       });
     } else {
       await tg(TELEGRAM_BOT_TOKEN, 'sendMessage', {
         chat_id: chatId,
-        text: "Спасибо за сообщение! Мы отвечаем в рабочие часы (ежедневно с 09:00 до 21:00).\n\n" +
-              "Если срочно — звоните:\n" +
-              "📍 Армада 2: +7 (3532) 42-40-50\n" +
-              "📍 КИТ: +7 (3532) 92-20-50\n\n" +
-              "Или выберите ниже:",
+        text: "Спасибо за сообщение! Мы отвечаем в рабочие часы (ежедневно с 09:00 до 21:00).\n\nЕсли срочно — звоните:\n📍 Армада 2: +7 (3532) 42-40-50\n📍 КИТ: +7 (3532) 92-20-50\n\nИли выберите ниже:",
         reply_markup: menuKeyboard()
       });
-
       if (TELEGRAM_CHAT_ID) {
         await tg(TELEGRAM_BOT_TOKEN, 'sendMessage', {
           chat_id: TELEGRAM_CHAT_ID,
@@ -183,7 +191,6 @@ export default async function handler(req, res) {
         });
       }
     }
-
     return res.status(200).json({ ok: true });
   } catch (err) {
     console.error("Webhook error:", err);
