@@ -1188,7 +1188,7 @@
     top: 0; left: 0; right: 0; bottom: 0;
     background: rgba(13,13,13,0.98);
     backdrop-filter: blur(20px);
-    z-index: 490;
+    z-index: 501;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -1873,8 +1873,21 @@
       </svg>
       <span class="nav-tg-btn__text">Telegram</span>
     </a>
+    <button class="burger" id="navBurger" aria-label="Открыть меню" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
+
+<div class="nav-drawer" id="navDrawer">
+  <button class="nav-drawer-close" id="navDrawerClose" aria-label="Закрыть меню">&times;</button>
+  <a href="#services">Услуги</a>
+  <a href="#how">Как работает</a>
+  <a href="#reviews">Отзывы</a>
+  <a href="#locations">Адреса</a>
+  <a href="https://t.me/aleks_auto_booking_bot" target="_blank" rel="noopener noreferrer">Telegram-бот</a>
+  <a href="#booking" class="drawer-cta">Записаться</a>
+</div>
 
 <!-- HERO -->
 <section class="hero" id="home">
@@ -2911,6 +2924,35 @@
       }
     });
   });
+
+  // ─── MOBILE NAV DRAWER ───
+  (function() {
+    var burger = document.getElementById('navBurger');
+    var drawer = document.getElementById('navDrawer');
+    var closeBtn = document.getElementById('navDrawerClose');
+    if (!burger || !drawer || !closeBtn) return;
+
+    function openDrawer() {
+      drawer.classList.add('open');
+      burger.classList.add('open');
+      burger.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeDrawer() {
+      drawer.classList.remove('open');
+      burger.classList.remove('open');
+      burger.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+
+    burger.addEventListener('click', function() {
+      drawer.classList.contains('open') ? closeDrawer() : openDrawer();
+    });
+    closeBtn.addEventListener('click', closeDrawer);
+    drawer.querySelectorAll('a').forEach(function(a) {
+      a.addEventListener('click', closeDrawer);
+    });
+  })();
 </script>
 
 <style>
