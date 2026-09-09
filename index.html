@@ -1596,15 +1596,32 @@
   /* ─── REVIEWS ─── */
   .reviews-section { background: var(--bg2); padding: 80px 60px; }
   .reviews-section .section-title { margin-bottom: 48px; }
-  .reviews-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
-  .review-card { background: var(--surface); padding: 36px; transition: background 0.2s; }
-  .review-card:hover { background: #222; }
-  .review-card__meta { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
-  .review-card__stars { color: var(--oil); font-size: 0.85rem; letter-spacing: 0.05em; }
-  .review-card__source { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; }
-  .review-card__text { font-size: 0.88rem; color: var(--text); line-height: 1.7; margin-bottom: 20px; }
-  .review-card__author { font-size: 0.78rem; color: var(--muted); }
   .reviews-cta { text-align: center; margin-top: 40px; }
+  @media (max-width: 900px) { .reviews-section { padding: 60px 24px; } }
+  @media (max-width: 600px) { .reviews-section { padding: 52px 18px; } }
+
+  .gis-widget-wrap {
+    max-width: 528px;
+    margin: 0 auto;
+  }
+  .gis-widget-wrap iframe {
+    display: block;
+    border: 0;
+    width: 528px;
+    height: 824px;
+  }
+  @media (max-width: 560px) {
+    .gis-widget-wrap {
+      width: 100%;
+      overflow: hidden;
+      height: calc(824px * (100vw - 36px) / 528px);
+      max-height: 824px;
+    }
+    .gis-widget-wrap iframe {
+      transform: scale(calc((100vw - 36px) / 528px));
+      transform-origin: top left;
+    }
+  }
 
   .rating-badges {
     display: flex;
@@ -1633,9 +1650,6 @@
     line-height: 1.4;
   }
 
-  @media (max-width: 900px) {
-    .reviews-grid { grid-template-columns: 1fr; }
-  }
   @media (max-width: 480px) {
     .rating-badges { flex-direction: column; }
   }
@@ -2440,32 +2454,10 @@
 <section class="reviews-section" id="reviews">
   <div class="section-tag reveal">Отзывы клиентов</div>
   <div class="section-title reveal">ЧТО ГОВОРЯТ<br>НАШИ КЛИЕНТЫ</div>
-  <div class="reviews-grid reveal">
-    <div class="review-card">
-      <div class="review-card__meta">
-        <span class="review-card__stars">★★★★★</span>
-        <span class="review-card__source">Яндекс Карты</span>
-      </div>
-      <p class="review-card__text">"Ребята очень профессиональны и внимательны. Всё сделали быстро и качественно, подробно рассказали о маслах и фильтрах, дали полезные советы по обслуживанию. Цены радуют. Теперь буду ходить только сюда!"</p>
-      <div class="review-card__author">Антон Галин · май 2025</div>
-    </div>
-    <div class="review-card">
-      <div class="review-card__meta">
-        <span class="review-card__stars">★★★★★</span>
-        <span class="review-card__source">Яндекс Карты</span>
-      </div>
-      <p class="review-card__text">"Приехали в Армаду 2 всей семьёй. На парковке заметил павильон Алекс-Авто. Загнал машину сразу — очереди не было. Пока гуляли, заменили масло, фильтры, тормозные колодки и дворники. Очень удобно!"</p>
-      <div class="review-card__author">Алексей Соколов · декабрь 2024</div>
-    </div>
-    <div class="review-card">
-      <div class="review-card__meta">
-        <span class="review-card__stars">★★★★★</span>
-        <span class="review-card__source">Яндекс Карты</span>
-      </div>
-      <p class="review-card__text">"Случайно наткнулся на этот небольшой сервис — опыт положительный. Провели ТО по замене фильтров и масла в двигателе. Консультант помог подобрать расходники. Обслуживание оперативно и качественно. Рекомендую!"</p>
-      <div class="review-card__author">Oleg V. · май 2025</div>
-    </div>
+  <div class="gis-widget-wrap reveal">
+    <iframe id="big_light_6755936311984617" frameborder="0" width="528" height="824" sandbox="allow-modals allow-forms allow-scripts allow-same-origin allow-popups allow-top-navigation-by-user-activation" title="Отзывы Алекс-Авто на 2ГИС"></iframe>
   </div>
+  <script type="text/javascript">((r,u)=>{const l=document.getElementById(r);l.contentWindow.document.open(),l.contentWindow.document.write(decodeURIComponent(escape(atob(u)))),l.contentWindow.document.close()})("big_light_6755936311984617", "PGhlYWQ+PHNjcmlwdCB0eXBlPSJ0ZXh0L2phdmFzY3JpcHQiPgogICAgd2luZG93Ll9fc2l6ZV9fPSdiaWcnOwogICAgd2luZG93Ll9fdGhlbWVfXz0nbGlnaHQnOwogICAgd2luZG93Ll9fYnJhbmNoSWRfXz0nJwogICAgd2luZG93Ll9fb3JnSWRfXz0nNjc1NTkzNjMxMTk4NDYxNycKICAgPC9zY3JpcHQ+PHNjcmlwdCBjcm9zc29yaWdpbj0iYW5vbnltb3VzIiB0eXBlPSJtb2R1bGUiIHNyYz0iaHR0cHM6Ly9kaXNrLjJnaXMuY29tL3dpZGdldC1jb25zdHJ1Y3Rvci9hc3NldHMvaWZyYW1lLmpzIj48L3NjcmlwdD48bGluayByZWw9Im1vZHVsZXByZWxvYWQiIGNyb3Nzb3JpZ2luPSJhbm9ueW1vdXMiIGhyZWY9Imh0dHBzOi8vZGlzay4yZ2lzLmNvbS93aWRnZXQtY29uc3RydWN0b3IvYXNzZXRzL2RlZmF1bHRzLmpzIj48bGluayByZWw9InN0eWxlc2hlZXQiIGNyb3Nzb3JpZ2luPSJhbm9ueW1vdXMiIGhyZWY9Imh0dHBzOi8vZGlzay4yZ2lzLmNvbS93aWRnZXQtY29uc3RydWN0b3IvYXNzZXRzL2RlZmF1bHRzLmNzcyI+PC9oZWFkPjxib2R5PjxkaXYgaWQ9ImlmcmFtZSI+PC9kaXY+PC9ib2R5Pg==")</script>
   <div class="rating-badges reveal">
     <div class="rating-badge-item">
       <span class="rating-badge-label">пр. Гагарина, 58/1В (ТРЦ Армада 2)</span>
