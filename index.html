@@ -153,17 +153,26 @@
   .nav-tg-btn {
     display: flex;
     align-items: center;
-    justify-content: center;
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
+    gap: 8px;
+    padding: 9px 16px 9px 11px;
+    border-radius: 999px;
     background: #2AABEE;
+    color: #fff !important;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
     flex-shrink: 0;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
   }
+  .nav-tg-btn svg { flex-shrink: 0; }
   .nav-tg-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(42,171,238,0.4);
+    background: #229ED9;
+    color: #fff !important;
   }
 
   /* ─── HERO ─── */
@@ -1250,7 +1259,7 @@
   /* ── 900px: hide desktop nav, show burger ── */
   @media (max-width: 900px) {
     .nav-links { display: none; }
-    .nav-tg-btn { width: 34px; height: 34px; }
+    .nav-tg-btn { padding: 8px 12px 8px 10px; font-size: 0.68rem; }
     .burger { display: flex; }
     .logo-img { height: 120px; }
     .footer-logo-img { height: 120px; }
@@ -1346,6 +1355,12 @@
     .float-cta { right: 12px; left: 12px; bottom: 14px; }
     .brands-grid { grid-template-columns: repeat(2, 1fr) !important; }
     .brand-cards-grid { grid-template-columns: 1fr !important; }
+  }
+
+  /* ── 420px: icon-only Telegram nav button ── */
+  @media (max-width: 420px) {
+    .nav-tg-btn__text { display: none; }
+    .nav-tg-btn { padding: 9px; border-radius: 50%; }
   }
 
   /* ─── MODAL POPUP (BOOKING) ─── */
@@ -1850,12 +1865,13 @@
       <li><a href="#locations">Адреса</a></li>
       <li><a href="#booking" class="nav-cta">Записаться</a></li>
     </ul>
-    <a href="https://t.me/aleks_auto_booking_bot" target="_blank" rel="noopener noreferrer" class="nav-tg-btn" title="Написать в Telegram" aria-label="Написать в Telegram боту Алекс-Авто">
-      <svg width="20" height="20" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <a href="https://t.me/aleks_auto_booking_bot" target="_blank" rel="noopener noreferrer" class="nav-tg-btn" title="Написать в Telegram-бот Алекс-Авто" aria-label="Написать в Telegram-бот Алекс-Авто">
+      <svg width="18" height="18" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M9.5 20.5L31.5 12.5L24.5 30.5L20.5 24.5L15.5 21.5L9.5 20.5Z" fill="white"/>
         <path d="M15.5 21.5L20.5 24.5L18.5 30.5L15.5 21.5Z" fill="#C8DAEA"/>
         <path d="M20.5 24.5L24.5 30.5L31.5 12.5L20.5 24.5Z" fill="white" opacity="0.7"/>
       </svg>
+      <span class="nav-tg-btn__text">Telegram</span>
     </a>
   </div>
 </nav>
