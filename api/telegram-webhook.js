@@ -1,10 +1,151 @@
+const LOCATIONS = {
+  a: { name: 'пр. Гагарина, 58/1В (ТРЦ Армада 2)', phone: '+7 (3532) 42-40-50' },
+  k: { name: 'ул. Салмышская, 71 ст3 (ТРЦ «Кит»)', phone: '+7 (3532) 92-20-50' }
+};
+
+const SERVICES = {
+  oil: 'Замена моторного масла',
+  akpp: 'Замена масла в АКПП',
+  mkpp: 'Замена масла в МКПП',
+  gur: 'Замена жидкости ГУР',
+  red: 'Замена редукторного масла',
+  svech: 'Замена свечей зажигания',
+  kolod: 'Замена тормозных колодок',
+  other: 'Иное (уточню в сообщении)'
+};
+
+const DATES = {
+  today: 'Сегодня',
+  tomorrow: 'Завтра',
+  week: 'На этой неделе'
+};
+
+function menuKeyboard() {
+  return { inline_keyboard: [
+    [{ text: '📝 Записаться', callback_data: 'menu:book' }],
+    [{ text: '📞 Заказать звонок', callback_data: 'menu:call' }]
+  ]};
+}
+
+function locationKeyboard(prefix) {
+  return { inline_keyboard: [
+    [{ text: 'Армада 2', callback_data: `${prefix}:a` }],
+    [{ text: 'КИТ', callback_data: `${prefix}:k` }]
+  ]};
+}
+
+function serviceKeyboard(loc) {
+  return { inline_keyboard: Object.entries(SERVICES).map(([code, label]) => [
+    { text: label, callback_data: `bk:svc:${loc}:${code}` }
+  ])};
+}
+
+function dateKeyboard(loc, svc) {
+  return { inline_keyboard: Object.entries(DATES).map(([code, label]) => [
+    { text: label, callback_data: `bk:date:${loc}:${svc}:${code}` }
+  ])};
+}
+
+async function tg(token, method, payload) {
+  const res = await fetch(`https://api.telegram.org/bot${token}/${method}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  return res.json();
+}
+
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
+  if (req.method !== 'POST') return res.status(200).json({ ok: true });
+
+  const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+  const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
+  const TELEGRAM_TOPIC_ID = process.env.TELEGRAM_TOPIC_ID;
+
+  if (!TELEGRAM_BOT_TOKEN) {
+    console.warn("TELEGRAM_BOT_TOKEN is not configured");
     return res.status(200).json({ ok: true });
   }
 
   try {
     const update = req.body;
+
+    if (update?.callback_query) {
+      const cq = update.callback_query;
+      const chatId = cq.message.chat.id;
+      const messageId = cq.message.message_id;
+      const data = cq.data || '';
+      const fromName = [cq.from?.first_name, cq.from?.last_name].filter(Boolean).join(' ') || 'Без имени';
+      const fromUsername = cq.from?.username ? `@${cq.from.username}` : '—';
+
+      await tg(TELEGRAM_BOT_TOKEN, 'answerCallbackQuery', { callback_query_id: cq.id });
+
+      const parts = data.split(':');
+
+      if (data === 'menu:book') {
+        await tg(TELEGRAM_BOT_TOKEN, 'editMessageText', {
+          chat_id: chatId, message_id: messageId,
+          text: 'Выберите точку:',
+          reply_markup: locationKeyboard('bk:loc')
+        });
+      } else if (data === 'menu:call') {
+        await tg(TELEGRAM_BOT_TOKEN, 'editMessageText', {
+          chat_id: chatId, message_id: messageId,
+          text: 'Из какой точки перезвонить?',
+          reply_markup: locationKeyboard('call')
+        });
+      } else if (parts[0] === 'bk' && parts[1] === 'loc') {
+        await tg(TELEGRAM_BOT_TOKEN, 'editMessageText', {
+          chat_id: chatId, message_id: messageId,
+          text: 'Выберите услугу:',
+          reply_markup: serviceKeyboard(parts[2])
+        });
+      } else if (parts[0] === 'bk' && parts[1] === 'svc') {
+        await tg(TELEGRAM_BOT_TOKEN, 'editMessageText', {
+          chat_id: chatId, message_id: messageId,
+          text: 'На когда?',
+          reply_markup: dateKeyboard(parts[2], parts[3])
+        });
+      } else if (parts[0] === 'bk' && parts[1] === 'date') {
+        const loc = parts[2], svc = parts[3], date = parts[4];
+        const locInfo = LOCATIONS[loc];
+        const svcLabel = SERVICES[svc] || svc;
+        const dateLabel = DATES[date] || date;
+
+        await tg(TELEGRAM_BOT_TOKEN, 'editMessageText', {
+          chat_id: chatId, message_id: messageId,
+          text: `✅ Заявка принята!\n\n📍 ${locInfo.name}\n🔧 ${svcLabel}\n📅 ${dateLabel}\n\nМы свяжемся с вами для подтверждения.`
+        });
+
+        if (TELEGRAM_CHAT_ID) {
+          await tg(TELEGRAM_BOT_TOKEN, 'sendMessage', {
+            chat_id: TELEGRAM_CHAT_ID,
+            message_thread_id: TELEGRAM_TOPIC_ID ? parseInt(TELEGRAM_TOPIC_ID) : undefined,
+            text: `📝 *${fromName}* (${fromUsername}) заполнил заявку через бота\n\n📍 *Точка:* ${locInfo.name}\n🔧 *Услуга:* ${svcLabel}\n📅 *Дата:* ${dateLabel}`,
+            parse_mode: 'Markdown'
+          });
+        }
+      } else if (parts[0] === 'call') {
+        const locInfo = LOCATIONS[parts[1]];
+
+        await tg(TELEGRAM_BOT_TOKEN, 'editMessageText', {
+          chat_id: chatId, message_id: messageId,
+          text: `✅ Заявка на звонок принята!\n\n📍 ${locInfo.name}\n\nМы позвоним вам в ближайшее время.`
+        });
+
+        if (TELEGRAM_CHAT_ID) {
+          await tg(TELEGRAM_BOT_TOKEN, 'sendMessage', {
+            chat_id: TELEGRAM_CHAT_ID,
+            message_thread_id: TELEGRAM_TOPIC_ID ? parseInt(TELEGRAM_TOPIC_ID) : undefined,
+            text: `📞 *${fromName}* (${fromUsername}) оставил заявку на звонок с точки «${locInfo.name}»`,
+            parse_mode: 'Markdown'
+          });
+        }
+      }
+
+      return res.status(200).json({ ok: true });
+    }
+
     const message = update?.message;
     if (!message || !message.chat || !message.text) {
       return res.status(200).json({ ok: true });
@@ -15,49 +156,33 @@ export default async function handler(req, res) {
     const fromName = [message.from?.first_name, message.from?.last_name].filter(Boolean).join(' ') || 'Без имени';
     const fromUsername = message.from?.username ? `@${message.from.username}` : '—';
 
-    const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
-    const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
-    const TELEGRAM_TOPIC_ID = process.env.TELEGRAM_TOPIC_ID;
-
-    if (!TELEGRAM_BOT_TOKEN) {
-      console.warn("TELEGRAM_BOT_TOKEN is not configured");
-      return res.status(200).json({ ok: true });
-    }
-
-    const tgUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-
-    let reply;
     if (text === '/start') {
-      reply = "Здравствуйте! Это Алекс-Авто — экспресс-замена масла в Оренбурге за 30 минут.\n\n" +
-              "Напишите сюда, чем можем помочь, или оставьте заявку на сайте aleks-auto.com — мы свяжемся с вами.\n\n" +
-              "📞 +7 (3532) 42-40-50 / 92-20-50";
+      await tg(TELEGRAM_BOT_TOKEN, 'sendMessage', {
+        chat_id: chatId,
+        text: "Здравствуйте! Это Алекс-Авто — экспресс-замена масла в Оренбурге за 30 минут.\n\n" +
+              "Напишите сюда, чем можем помочь, или выберите вариант ниже:",
+        reply_markup: menuKeyboard()
+      });
     } else {
-      reply = "Спасибо за сообщение! Мы отвечаем в рабочие часы (ежедневно с 09:00 до 21:00). " +
-              "Если срочно — звоните: +7 (3532) 42-40-50.";
+      await tg(TELEGRAM_BOT_TOKEN, 'sendMessage', {
+        chat_id: chatId,
+        text: "Спасибо за сообщение! Мы отвечаем в рабочие часы (ежедневно с 09:00 до 21:00).\n\n" +
+              "Если срочно — звоните:\n" +
+              "📍 Армада 2: +7 (3532) 42-40-50\n" +
+              "📍 КИТ: +7 (3532) 92-20-50\n\n" +
+              "Или выберите ниже:",
+        reply_markup: menuKeyboard()
+      });
 
-      // Пересылаем реальный вопрос клиента в рабочий чат с заявками
       if (TELEGRAM_CHAT_ID) {
-        const forwardText = `💬 *Сообщение боту от клиента*\n\n` +
-          `👤 *От:* ${fromName} (${fromUsername})\n` +
-          `📝 *Текст:* ${text}`;
-        await fetch(tgUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            chat_id: TELEGRAM_CHAT_ID,
-            message_thread_id: TELEGRAM_TOPIC_ID ? parseInt(TELEGRAM_TOPIC_ID) : undefined,
-            text: forwardText,
-            parse_mode: 'Markdown'
-          })
+        await tg(TELEGRAM_BOT_TOKEN, 'sendMessage', {
+          chat_id: TELEGRAM_CHAT_ID,
+          message_thread_id: TELEGRAM_TOPIC_ID ? parseInt(TELEGRAM_TOPIC_ID) : undefined,
+          text: `💬 *Сообщение боту от клиента*\n\n👤 *От:* ${fromName} (${fromUsername})\n📝 *Текст:* ${text}`,
+          parse_mode: 'Markdown'
         });
       }
     }
-
-    await fetch(tgUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: chatId, text: reply })
-    });
 
     return res.status(200).json({ ok: true });
   } catch (err) {
