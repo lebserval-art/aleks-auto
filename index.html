@@ -1876,7 +1876,7 @@
     </div>
 
     <div class="form-wrap reveal" id="form-wrap">
-      <form id="booking-form" action="https://formspree.io/f/xrejwdzj" method="POST">
+      <form id="booking-form" method="POST">
         <div class="form-content" id="form-content">
         <div class="form-title">Форма записи</div>
         <p class="form-subtitle">Заполните форму — мы перезвоним и подтвердим время</p>
@@ -1941,22 +1941,42 @@
       <script>
         document.getElementById('booking-form').addEventListener('submit', function(e) {
           e.preventDefault();
-          var form = this;
           var btn = document.getElementById('form-btn');
+
+          var name = document.getElementById('f-name').value.trim();
+          var phone = document.getElementById('f-phone').value.trim();
+          var location = document.getElementById('f-location').value;
+          var service = document.getElementById('f-service').value;
+          var date = document.getElementById('f-date').value;
+          var comment = document.getElementById('f-comment').value.trim();
+
+          if (!name) { shake('f-name'); return; }
+          if (phone.replace(/\D/g, '').length < 11) { shake('f-phone'); return; }
+          if (!location) { shake('f-location'); return; }
+
           btn.textContent = 'Отправляем...';
           btn.disabled = true;
-          fetch(form.action, {
+
+          fetch('/api/booking', {
             method: 'POST',
-            body: new FormData(form),
-            headers: { 'Accept': 'application/json' }
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: name,
+              phone: phone,
+              location: location,
+              service: service,
+              date: date,
+              comment: comment
+            })
           }).then(function(resp) {
-            if (resp.ok) {
-              document.getElementById('form-content').style.display = 'none';
-              document.getElementById('form-success').style.display = 'flex';
-            } else {
-              btn.textContent = 'Ошибка — попробуйте ещё раз';
-              btn.disabled = false;
+            if (!resp.ok) throw new Error('Ошибка сервера при отправке');
+            return resp.json();
+          }).then(function() {
+            if (typeof ym === 'function') {
+              try { ym(99474451, 'reachGoal', 'lead_form'); } catch (err) {}
             }
+            document.getElementById('form-content').style.display = 'none';
+            document.getElementById('form-success').style.display = 'flex';
           }).catch(function() {
             btn.textContent = 'Ошибка — попробуйте ещё раз';
             btn.disabled = false;
@@ -2280,20 +2300,6 @@
   if (dateInput) {
     const today = new Date().toISOString().split('T')[0];
     dateInput.min = today;
-  }
-
-  // ─── FORM SUBMIT ───
-  function submitForm() {
-    const name = document.getElementById('f-name').value.trim();
-    const phone = document.getElementById('f-phone').value.trim();
-    const location = document.getElementById('f-location').value;
-
-    if (!name) { shake('f-name'); return; }
-    if (phone.length < 16) { shake('f-phone'); return; }
-    if (!location) { shake('f-location'); return; }
-
-    document.getElementById('form-content').style.display = 'none';
-    document.getElementById('form-success').style.display = 'flex';
   }
 
   function shake(id) {
