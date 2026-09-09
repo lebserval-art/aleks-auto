@@ -1551,6 +1551,58 @@
   }
 
 @media (max-width: 768px) { h1, h2, .brands-title { font-size: clamp(22px, 5.5vw, 32px) !important; word-break: normal; } }
+
+  /* ─── PROMO BANNER ─── */
+  .promo-banner {
+    background: linear-gradient(90deg, #B85F0E 0%, #E87A1D 50%, #B85F0E 100%);
+    padding: 18px 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .promo-banner__item { display: flex; align-items: center; gap: 14px; }
+  .promo-banner__icon { font-size: 1.5rem; }
+  .promo-banner__icon--sm { font-size: 1.3rem; }
+  .promo-banner__title { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 0.06em; color: #0D0D0D; line-height: 1.1; }
+  .promo-banner__desc { font-size: 0.78rem; color: rgba(13,13,13,0.75); font-weight: 600; letter-spacing: 0.04em; }
+  .promo-banner__text { font-size: 0.78rem; color: rgba(13,13,13,0.85); font-weight: 600; }
+  .promo-banner__text strong { color: #0D0D0D; font-weight: 700; }
+  .promo-banner__cta {
+    background: #0D0D0D;
+    color: var(--oil);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 12px 24px;
+    border-radius: 2px;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  /* ─── REVIEWS ─── */
+  .reviews-section { background: var(--bg2); padding: 80px 60px; }
+  .reviews-section .section-title { margin-bottom: 48px; }
+  .reviews-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+  .review-card { background: var(--surface); padding: 36px; transition: background 0.2s; }
+  .review-card:hover { background: #222; }
+  .review-card__meta { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+  .review-card__stars { color: var(--oil); font-size: 0.85rem; letter-spacing: 0.05em; }
+  .review-card__source { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; }
+  .review-card__text { font-size: 0.88rem; color: var(--text); line-height: 1.7; margin-bottom: 20px; }
+  .review-card__author { font-size: 0.78rem; color: var(--muted); }
+  .reviews-cta { text-align: center; margin-top: 40px; }
+
+  @media (max-width: 900px) {
+    .reviews-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 768px) {
+    .promo-banner { padding: 18px 24px; }
+  }
 </style>
 
 <style id="mobile-fix">
@@ -1771,19 +1823,19 @@
 </section>
 
 <!-- PROMO BANNER -->
-<div style="background: linear-gradient(90deg, #B85F0E 0%, #E87A1D 50%, #B85F0E 100%); padding: 18px 60px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;">
-  <div style="display:flex; align-items:center; gap:14px;">
-    <span style="font-size:1.5rem;">🎁</span>
+<div class="promo-banner">
+  <div class="promo-banner__item">
+    <span class="promo-banner__icon">🎁</span>
     <div>
-      <div style="font-family:'Bebas Neue',sans-serif; font-size:1.2rem; letter-spacing:0.06em; color:#0D0D0D; line-height:1.1;">БЕСПЛАТНАЯ ЗАМЕНА МАСЛА</div>
-      <div style="font-size:0.78rem; color:rgba(13,13,13,0.75); font-weight:600; letter-spacing:0.04em;">При покупке комплекта масло + фильтр — замена в подарок!</div>
+      <div class="promo-banner__title">БЕСПЛАТНАЯ ЗАМЕНА МАСЛА</div>
+      <div class="promo-banner__desc">При покупке комплекта масло + фильтр — замена в подарок!</div>
     </div>
   </div>
-  <div style="display:flex; align-items:center; gap:14px;">
-    <span style="font-size:1.3rem;">⭐</span>
-    <div style="font-size:0.78rem; color:rgba(13,13,13,0.85); font-weight:600;">Скидка 10% за отзыв →<br><span style="color:#0D0D0D; font-weight:700;">на Яндекс Картах или в 2ГИС</span></div>
+  <div class="promo-banner__item">
+    <span class="promo-banner__icon promo-banner__icon--sm">⭐</span>
+    <div class="promo-banner__text">Скидка 10% за отзыв →<br><strong>на Яндекс Картах или в 2ГИС</strong></div>
   </div>
-  <a href="javascript:void(0)" onclick="openReviewModal()" style="background:#0D0D0D; color:#E87A1D; font-family:'Montserrat',sans-serif; font-weight:700; font-size:0.78rem; letter-spacing:0.1em; text-transform:uppercase; padding:12px 24px; border-radius:2px; text-decoration:none; white-space:nowrap; cursor:pointer;">Воспользоваться →</a>
+  <a href="javascript:void(0)" onclick="openReviewModal()" class="promo-banner__cta">Воспользоваться →</a>
 </div>
 
 <!-- SERVICES -->
@@ -2344,37 +2396,37 @@
 </section>
 
 <!-- REVIEWS -->
-<section style="background: var(--bg2); padding: 80px 60px;" id="reviews">
+<section class="reviews-section" id="reviews">
   <div class="section-tag reveal">Отзывы клиентов</div>
-  <div class="section-title reveal" style="margin-bottom:48px;">ЧТО ГОВОРЯТ<br>НАШИ КЛИЕНТЫ</div>
-  <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:2px;" class="reveal">
-    <div style="background:var(--surface); padding:36px; transition: background 0.2s;" onmouseover="this.style.background='#222'" onmouseout="this.style.background='var(--surface)'">
-      <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
-        <span style="color:var(--oil); font-size:0.85rem; letter-spacing:0.05em;">★★★★★</span>
-        <span style="font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; font-weight:600;">Яндекс Карты</span>
+  <div class="section-title reveal">ЧТО ГОВОРЯТ<br>НАШИ КЛИЕНТЫ</div>
+  <div class="reviews-grid reveal">
+    <div class="review-card">
+      <div class="review-card__meta">
+        <span class="review-card__stars">★★★★★</span>
+        <span class="review-card__source">Яндекс Карты</span>
       </div>
-      <p style="font-size:0.88rem; color:var(--text); line-height:1.7; margin-bottom:20px;">"Ребята очень профессиональны и внимательны. Всё сделали быстро и качественно, подробно рассказали о маслах и фильтрах, дали полезные советы по обслуживанию. Цены радуют. Теперь буду ходить только сюда!"</p>
-      <div style="font-size:0.78rem; color:var(--muted);">Антон Галин · май 2025</div>
+      <p class="review-card__text">"Ребята очень профессиональны и внимательны. Всё сделали быстро и качественно, подробно рассказали о маслах и фильтрах, дали полезные советы по обслуживанию. Цены радуют. Теперь буду ходить только сюда!"</p>
+      <div class="review-card__author">Антон Галин · май 2025</div>
     </div>
-    <div style="background:var(--surface); padding:36px; transition: background 0.2s;" onmouseover="this.style.background='#222'" onmouseout="this.style.background='var(--surface)'">
-      <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
-        <span style="color:var(--oil); font-size:0.85rem; letter-spacing:0.05em;">★★★★★</span>
-        <span style="font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; font-weight:600;">Яндекс Карты</span>
+    <div class="review-card">
+      <div class="review-card__meta">
+        <span class="review-card__stars">★★★★★</span>
+        <span class="review-card__source">Яндекс Карты</span>
       </div>
-      <p style="font-size:0.88rem; color:var(--text); line-height:1.7; margin-bottom:20px;">"Приехали в Армаду 2 всей семьёй. На парковке заметил павильон Алекс-Авто. Загнал машину сразу — очереди не было. Пока гуляли, заменили масло, фильтры, тормозные колодки и дворники. Очень удобно!"</p>
-      <div style="font-size:0.78rem; color:var(--muted);">Алексей Соколов · декабрь 2024</div>
+      <p class="review-card__text">"Приехали в Армаду 2 всей семьёй. На парковке заметил павильон Алекс-Авто. Загнал машину сразу — очереди не было. Пока гуляли, заменили масло, фильтры, тормозные колодки и дворники. Очень удобно!"</p>
+      <div class="review-card__author">Алексей Соколов · декабрь 2024</div>
     </div>
-    <div style="background:var(--surface); padding:36px; transition: background 0.2s;" onmouseover="this.style.background='#222'" onmouseout="this.style.background='var(--surface)'">
-      <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
-        <span style="color:var(--oil); font-size:0.85rem; letter-spacing:0.05em;">★★★★★</span>
-        <span style="font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; font-weight:600;">Яндекс Карты</span>
+    <div class="review-card">
+      <div class="review-card__meta">
+        <span class="review-card__stars">★★★★★</span>
+        <span class="review-card__source">Яндекс Карты</span>
       </div>
-      <p style="font-size:0.88rem; color:var(--text); line-height:1.7; margin-bottom:20px;">"Случайно наткнулся на этот небольшой сервис — опыт положительный. Провели ТО по замене фильтров и масла в двигателе. Консультант помог подобрать расходники. Обслуживание оперативно и качественно. Рекомендую!"</p>
-      <div style="font-size:0.78rem; color:var(--muted);">Oleg V. · май 2025</div>
+      <p class="review-card__text">"Случайно наткнулся на этот небольшой сервис — опыт положительный. Провели ТО по замене фильтров и масла в двигателе. Консультант помог подобрать расходники. Обслуживание оперативно и качественно. Рекомендую!"</p>
+      <div class="review-card__author">Oleg V. · май 2025</div>
     </div>
   </div>
-  <div style="text-align:center; margin-top:40px;" class="reveal">
-    <a href="https://yandex.com/maps/org/aleks_avto/214096152339/reviews/" target="_blank" class="btn-secondary" style="display:inline-block;">Все отзывы на Яндекс Картах →</a>
+  <div class="reviews-cta reveal">
+    <a href="https://yandex.com/maps/org/aleks_avto/214096152339/reviews/" target="_blank" class="btn-secondary">Все отзывы на Яндекс Картах →</a>
   </div>
 </section>
 
