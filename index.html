@@ -2855,6 +2855,15 @@
       });
     });
   }
+
+  // ─── ROUTE CLICK TRACKING (Яндекс Карты / 2ГИС buttons) ───
+  document.querySelectorAll('.map-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      if (typeof ym === 'function') {
+        ym(99474451, 'reachGoal', 'route_click');
+      }
+    });
+  });
 </script>
 
 <style>
