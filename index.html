@@ -4,20 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Алекс-Авто — Экспресс замена масла в Оренбурге</title>
-<meta name="description" content="Экспресс-замена масла в Оренбурге за 20 минут без записи. Два пункта: пр. Гагарина (ТРЦ Армада 2) и ул. Салмышская (ТРЦ «Кит»). Оригинальные масла и фильтры, гарантия.">
+<meta name="description" content="Экспресс-замена масла в Оренбурге за 30 минут — оставьте авто и идите по делам в ТЦ. Два пункта: пр. Гагарина (ТРЦ Армада 2) и ул. Салмышская (ТРЦ «Кит»). Оригинальные масла и фильтры, гарантия.">
 <link rel="canonical" href="https://aleks-auto.com/">
 
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Алекс-Авто">
 <meta property="og:title" content="Алекс-Авто — Экспресс замена масла в Оренбурге">
-<meta property="og:description" content="Экспресс-замена масла в Оренбурге за 20 минут без записи. Два пункта: пр. Гагарина (ТРЦ Армада 2) и ул. Салмышская (ТРЦ «Кит»). Оригинальные масла и фильтры, гарантия.">
+<meta property="og:description" content="Экспресс-замена масла в Оренбурге за 30 минут — оставьте авто и идите по делам в ТЦ. Два пункта: пр. Гагарина (ТРЦ Армада 2) и ул. Салмышская (ТРЦ «Кит»). Оригинальные масла и фильтры, гарантия.">
 <meta property="og:url" content="https://aleks-auto.com/">
 <meta property="og:image" content="https://aleks-auto.com/logo.webp">
 <meta property="og:locale" content="ru_RU">
 
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Алекс-Авто — Экспресс замена масла в Оренбурге">
-<meta name="twitter:description" content="Экспресс-замена масла в Оренбурге за 20 минут без записи. Два пункта в городе, оригинальные масла и фильтры.">
+<meta name="twitter:description" content="Экспресс-замена масла в Оренбурге за 30 минут. Два пункта в городе, оригинальные масла и фильтры.">
 <meta name="twitter:image" content="https://aleks-auto.com/logo.webp">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -514,6 +514,31 @@
     margin-bottom: 24px;
   }
 
+  .price-list {
+    list-style: none;
+    margin-bottom: 24px;
+    border-top: 1px solid var(--border);
+  }
+  .price-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.82rem;
+  }
+  .price-list .price-label {
+    color: var(--muted);
+    line-height: 1.4;
+  }
+  .price-list .price-value {
+    color: var(--text);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .price-list li:last-child { border-bottom: none; }
+
   .service-price {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 1.8rem;
@@ -911,6 +936,27 @@
 
   .locations-header { margin-bottom: 60px; }
 
+  .map-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+  .map-embed {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .map-embed iframe { display: block; border: 0; filter: grayscale(0.15); }
+  .map-embed-caption {
+    padding: 14px 18px;
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+  .map-embed-caption a { color: var(--oil); text-decoration: none; }
+  .map-embed-caption a:hover { text-decoration: underline; }
+
   .locations-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -1215,6 +1261,8 @@
 
   /* ── 768px: mobile locations single column ── */
   @media (max-width: 768px) {
+    .map-grid { grid-template-columns: 1fr; }
+    .map-embed iframe { height: 260px; }
     .locations-grid {
       grid-template-columns: 1fr !important;
       gap: 16px !important;
@@ -1533,6 +1581,46 @@
      "url": "https://aleks-auto.com/"
    },
    {
+     "@type": "FAQPage",
+     "mainEntity": [
+       {
+         "@type": "Question",
+         "name": "Сколько по времени занимает замена масла?",
+         "acceptedAnswer": { "@type": "Answer", "text": "В среднем 30 минут — вы можете оставить машину и пройтись по магазинам ТЦ, пока мы работаем." }
+       },
+       {
+         "@type": "Question",
+         "name": "Нужно ли записываться заранее?",
+         "acceptedAnswer": { "@type": "Answer", "text": "Рекомендуем оставить заявку онлайн или позвонить — мы перезвоним и подтвердим удобное время в течение 15 минут." }
+       },
+       {
+         "@type": "Question",
+         "name": "Работаете ли вы в праздники и выходные?",
+         "acceptedAnswer": { "@type": "Answer", "text": "Да, ежедневно с 09:00 до 21:00, без выходных и перерывов — в том числе в праздничные дни." }
+       },
+       {
+         "@type": "Question",
+         "name": "Какое масло вы используете — своё или можно принести моё?",
+         "acceptedAnswer": { "@type": "Answer", "text": "Работаем оба варианта: оригинальное масло напрямую от мировых производителей или ваше собственное — цена на услугу указана для обоих случаев." }
+       },
+       {
+         "@type": "Question",
+         "name": "Даёте ли вы гарантию на работы?",
+         "acceptedAnswer": { "@type": "Answer", "text": "Да. На каждую замену вы получаете кассовый чек и гарантийный талон." }
+       },
+       {
+         "@type": "Question",
+         "name": "Как можно оплатить?",
+         "acceptedAnswer": { "@type": "Answer", "text": "Наличными или картой: СБП, QR-код, безналичный расчёт, банковский перевод." }
+       },
+       {
+         "@type": "Question",
+         "name": "Не знаю, какое масло подходит моей машине — поможете определиться?",
+         "acceptedAnswer": { "@type": "Answer", "text": "Да, подберём масло и расходники по допускам конкретно вашего автомобиля." }
+       }
+     ]
+   },
+   {
      "@type": "Organization",
      "@id": "https://aleks-auto.com/#organization",
      "name": "Алекс-Авто",
@@ -1711,37 +1799,73 @@
     <div class="service-card reveal">
       <div class="service-icon">🛢️</div>
       <div class="service-name">Замена масла в двигателе</div>
-      <div class="service-desc">Бесплатно при покупке от 4 л масла + фильтры у нас. Без фильтров, без снятия защиты (своё масло) — от 1 200 ₽. С фильтрами и снятием защиты (своё масло) — 2 500 ₽. Ford Kuga TDCI / Great Wall Wingle 7 — 500 ₽.</div>
+      <ul class="price-list">
+        <li><span class="price-label">При покупке от 4 л масла + фильтры у нас</span><span class="price-value">Бесплатно</span></li>
+        <li><span class="price-label">Без фильтров, без снятия защиты (своё масло)</span><span class="price-value">от 1 200 ₽</span></li>
+        <li><span class="price-label">С фильтрами и снятием защиты (своё масло)</span><span class="price-value">2 500 ₽</span></li>
+        <li><span class="price-label">Ford Kuga TDCI / Great Wall Wingle 7</span><span class="price-value">500 ₽</span></li>
+      </ul>
       <div class="service-price">Бесплатно <span>при покупке комплекта у нас</span></div>
     </div>
     <div class="service-card reveal" style="transition-delay:0.1s">
       <div class="service-icon">⚙️</div>
       <div class="service-name">Замена масла в АКПП</div>
-      <div class="service-desc">С нашим маслом (через аппарат) — 500 ₽. Частичная / Kia Rio, Hyundai Solaris 6-AT — 1 500 ₽. GM через аппарат / Renault / Peugeot — 2 000 ₽. С заменой фильтра — 4 500 ₽.</div>
+      <ul class="price-list">
+        <li><span class="price-label">С нашим маслом (через аппарат)</span><span class="price-value">500 ₽</span></li>
+        <li><span class="price-label">Частичная / Kia Rio, Hyundai Solaris 6-AT</span><span class="price-value">1 500 ₽</span></li>
+        <li><span class="price-label">GM через аппарат / Renault / Peugeot</span><span class="price-value">2 000 ₽</span></li>
+        <li><span class="price-label">С заменой фильтра</span><span class="price-value">4 500 ₽</span></li>
+      </ul>
       <div class="service-price">от 500 ₽ <span>с нашим маслом</span></div>
     </div>
     <div class="service-card reveal" style="transition-delay:0.2s">
       <div class="service-icon">🔩</div>
       <div class="service-name">Замена масла в МКПП и редукторах</div>
-      <div class="service-desc">Механическая коробка передач — от 1 000 ₽. Редуктор / мост / раздаточная коробка — 800 ₽ за агрегат. Подберём масло по допускам вашего авто.</div>
+      <ul class="price-list">
+        <li><span class="price-label">Механическая коробка передач</span><span class="price-value">от 1 000 ₽</span></li>
+        <li><span class="price-label">Редуктор / мост / раздаточная коробка (за агрегат)</span><span class="price-value">800 ₽</span></li>
+      </ul>
+      <p style="font-size:0.78rem; color:var(--muted); margin:-16px 0 16px;">Подберём масло по допускам вашего авто</p>
       <div class="service-price">от 800 ₽ <span>за агрегат</span></div>
     </div>
     <div class="service-card reveal">
       <div class="service-icon">🔄</div>
       <div class="service-name">Замена масла в вариаторе и DSG</div>
-      <div class="service-desc">CVT без снятия поддона — 1 500 ₽, CVT с фильтром — 3 500 ₽. DSG (сухое) — 1 500 ₽, DSG (мокрое) — 2 000 ₽, DSG со снятием АКБ — 2 500 ₽. PowerShift (робот) — 1 000 ₽.</div>
+      <ul class="price-list">
+        <li><span class="price-label">CVT без снятия поддона</span><span class="price-value">1 500 ₽</span></li>
+        <li><span class="price-label">CVT с фильтром</span><span class="price-value">3 500 ₽</span></li>
+        <li><span class="price-label">DSG (сухое)</span><span class="price-value">1 500 ₽</span></li>
+        <li><span class="price-label">DSG (мокрое)</span><span class="price-value">2 000 ₽</span></li>
+        <li><span class="price-label">DSG со снятием АКБ</span><span class="price-value">2 500 ₽</span></li>
+        <li><span class="price-label">PowerShift (робот)</span><span class="price-value">1 000 ₽</span></li>
+      </ul>
       <div class="service-price">от 1 000 ₽ <span>PowerShift / CVT</span></div>
     </div>
     <div class="service-card reveal" style="transition-delay:0.1s">
       <div class="service-icon">💧</div>
       <div class="service-name">Замена жидкостей и фильтров</div>
-      <div class="service-desc">Воздушный / салонный фильтр — 400 ₽. Топливный фильтр — от 400 ₽. Охлаждающая жидкость — от 1 200 ₽ (с промывкой 2 000 ₽). Жидкость ГУР / ЭУР — от 1 200 ₽. Тормозная жидкость — 1 200 ₽. Промывка ДВС — 300 ₽.</div>
+      <ul class="price-list">
+        <li><span class="price-label">Воздушный / салонный фильтр</span><span class="price-value">400 ₽</span></li>
+        <li><span class="price-label">Топливный фильтр</span><span class="price-value">от 400 ₽</span></li>
+        <li><span class="price-label">Охлаждающая жидкость (с промывкой 2 000 ₽)</span><span class="price-value">от 1 200 ₽</span></li>
+        <li><span class="price-label">Жидкость ГУР / ЭУР</span><span class="price-value">от 1 200 ₽</span></li>
+        <li><span class="price-label">Тормозная жидкость</span><span class="price-value">1 200 ₽</span></li>
+        <li><span class="price-label">Промывка ДВС</span><span class="price-value">300 ₽</span></li>
+      </ul>
       <div class="service-price">от 300 ₽ <span>промывка ДВС</span></div>
     </div>
     <div class="service-card reveal" style="transition-delay:0.2s">
       <div class="service-icon">🔧</div>
       <div class="service-name">Свечи, колодки и муфта Haldex</div>
-      <div class="service-desc">Свечи зажигания (без разбора) — 1 000 ₽, с разбором — 1 500 ₽, V6 — 3 000 ₽. Тормозные колодки (дисковые) — от 1 000 ₽, задние с эл. ручником — от 2 200 ₽. Муфта Haldex: Geely — 2 000 ₽, Kia/Hyundai — 4 500 ₽.</div>
+      <ul class="price-list">
+        <li><span class="price-label">Свечи зажигания (без разбора)</span><span class="price-value">1 000 ₽</span></li>
+        <li><span class="price-label">Свечи зажигания (с разбором)</span><span class="price-value">1 500 ₽</span></li>
+        <li><span class="price-label">Свечи зажигания V6</span><span class="price-value">3 000 ₽</span></li>
+        <li><span class="price-label">Тормозные колодки (дисковые)</span><span class="price-value">от 1 000 ₽</span></li>
+        <li><span class="price-label">Тормозные колодки (задние, эл. ручник)</span><span class="price-value">от 2 200 ₽</span></li>
+        <li><span class="price-label">Муфта Haldex Geely</span><span class="price-value">2 000 ₽</span></li>
+        <li><span class="price-label">Муфта Haldex Kia / Hyundai</span><span class="price-value">4 500 ₽</span></li>
+      </ul>
       <div class="service-price">от 1 000 ₽ <span>свечи / колодки</span></div>
     </div>
   </div>
@@ -1899,6 +2023,77 @@
         <div class="why-text">Итоговая стоимость известна до начала работ. Никаких скрытых доплат — только то, о чём договорились.</div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<style>
+  .faq-section { background: var(--bg2); padding: 100px 60px; }
+  .faq-list { max-width: 760px; margin-top: 40px; }
+  .faq-item { border-bottom: 1px solid var(--border); }
+  .faq-item summary {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 22px 4px;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 0.98rem;
+    color: var(--white);
+  }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary::after {
+    content: '+';
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    color: var(--oil);
+    flex-shrink: 0;
+    transition: transform 0.2s;
+  }
+  .faq-item[open] summary::after { transform: rotate(45deg); }
+  .faq-item .faq-a {
+    padding: 0 4px 22px;
+    color: var(--muted);
+    font-size: 0.88rem;
+    line-height: 1.7;
+    max-width: 640px;
+  }
+</style>
+<section class="faq-section" id="faq">
+  <div class="section-tag reveal">Вопросы и ответы</div>
+  <div class="section-title reveal">ЧАСТЫЕ<br>ВОПРОСЫ</div>
+  <div class="faq-list reveal">
+    <details class="faq-item">
+      <summary>Сколько по времени занимает замена масла?</summary>
+      <div class="faq-a">В среднем 30 минут — вы можете оставить машину и пройтись по магазинам ТЦ, пока мы работаем.</div>
+    </details>
+    <details class="faq-item">
+      <summary>Нужно ли записываться заранее?</summary>
+      <div class="faq-a">Рекомендуем оставить заявку онлайн или позвонить — мы перезвоним и подтвердим удобное время в течение 15 минут. Так вы не ждёте на месте.</div>
+    </details>
+    <details class="faq-item">
+      <summary>Работаете ли вы в праздники и выходные?</summary>
+      <div class="faq-a">Да, ежедневно с 09:00 до 21:00, без выходных и перерывов — в том числе в праздничные дни.</div>
+    </details>
+    <details class="faq-item">
+      <summary>Какое масло вы используете — своё или можно принести моё?</summary>
+      <div class="faq-a">Работаем оба варианта. Мы — дилерская компания и поставляем оригинальное масло напрямую от мировых производителей с гарантией подлинности. Также можно приехать со своим маслом — в прайсе на каждую услугу указана цена для обоих случаев.</div>
+    </details>
+    <details class="faq-item">
+      <summary>Даёте ли вы гарантию на работы?</summary>
+      <div class="faq-a">Да. На каждую замену вы получаете кассовый чек и гарантийный талон, все работы задокументированы.</div>
+    </details>
+    <details class="faq-item">
+      <summary>Как можно оплатить?</summary>
+      <div class="faq-a">Наличными или картой: СБП, QR-код, безналичный расчёт, банковский перевод.</div>
+    </details>
+    <details class="faq-item">
+      <summary>Не знаю, какое масло подходит моей машине — поможете определиться?</summary>
+      <div class="faq-a">Да, подберём масло и расходники по допускам конкретно вашего автомобиля — просто укажите марку и модель при записи или звонке.</div>
+    </details>
   </div>
 </section>
 
@@ -2077,6 +2272,16 @@
   <div class="locations-header">
     <div class="section-tag reveal">Адреса</div>
     <div class="section-title reveal">НАШИ ПУНКТЫ В ОРЕНБУРГЕ</div>
+  </div>
+  <div class="map-grid reveal">
+    <div class="map-embed">
+      <iframe src="https://yandex.ru/map-widget/v1/org/aleks_avto/214096152339/?ll=51.774469%2C55.200194&z=16" width="100%" height="360" frameborder="0" loading="lazy" title="Алекс-Авто на карте — пр. Гагарина, 58/1В (ТРЦ Армада 2)"></iframe>
+      <div class="map-embed-caption">пр. Гагарина, 58/1В (ТРЦ Армада 2) · <a href="tel:+73532424050">+7 (3532) 42-40-50</a></div>
+    </div>
+    <div class="map-embed">
+      <iframe src="https://yandex.ru/map-widget/v1/org/aleks_avto/144864995154/?ll=51.811593%2C55.179385&z=16" width="100%" height="360" frameborder="0" loading="lazy" title="Алекс-Авто на карте — ул. Салмышская, 71 ст3 (ТРЦ «Кит»)"></iframe>
+      <div class="map-embed-caption">ул. Салмышская, 71 ст3 (ТРЦ «Кит») · <a href="tel:+73532922050">+7 (3532) 92-20-50</a></div>
+    </div>
   </div>
   <div class="locations-grid" style="grid-template-columns: repeat(2, 1fr);">
     <div class="location-card reveal">
