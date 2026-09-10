@@ -12,6 +12,35 @@ const SERVICES = {
 
 const DATES = { today: 'Сегодня', tomorrow: 'Завтра', week: 'На этой неделе' };
 
+const SOURCES = { '2gis': '2ГИС', 'yandex': 'Яндекс.Карты' };
+
+const KV_URL = process.env.KV_REST_API_URL;
+const KV_TOKEN = process.env.KV_REST_API_TOKEN;
+
+async function setSource(chatId, source) {
+  if (!KV_URL || !KV_TOKEN) return;
+  try {
+    await fetch(`${KV_URL}/set/src:${chatId}/${encodeURIComponent(source)}`, {
+      headers: { Authorization: `Bearer ${KV_TOKEN}` }
+    });
+  } catch (e) { console.error('KV set error:', e); }
+}
+
+async function getSource(chatId) {
+  if (!KV_URL || !KV_TOKEN) return null;
+  try {
+    const r = await fetch(`${KV_URL}/get/src:${chatId}`, {
+      headers: { Authorization: `Bearer ${KV_TOKEN}` }
+    });
+    const data = await r.json();
+    return data.result || null;
+  } catch (e) { console.error('KV get error:', e); return null; }
+}
+
+function sourceTag(source) {
+  return source ? `\n📍 Источник: ${source}` : '';
+}
+
 const PHONE_TAG_BOOK = '#запись_на_телефон';
 const PHONE_TAG_CALL = '#звонок_на_телефон';
 
@@ -143,10 +172,11 @@ export default async function handler(req, res) {
           text: `✅ Заявка принята!\n\n📍 ${locInfo.name}\n🔧 ${svcLabel}\n📅 ${dateLabel}\n📞 ${phone}\n\nМы свяжемся с вами для подтверждения.`
         });
         if (TELEGRAM_CHAT_ID) {
+          const source = await getSource(chatId);
           await tg(TELEGRAM_BOT_TOKEN, 'sendMessage', {
             chat_id: TELEGRAM_CHAT_ID,
             message_thread_id: TELEGRAM_TOPIC_ID ? parseInt(TELEGRAM_TOPIC_ID) : undefined,
-            text: `📝 *${fromName}* (${fromUsername}) заполнил заявку через бота\n\n📍 *Точка:* ${locInfo.name}\n🔧 *Услуга:* ${svcLabel}\n📅 *Дата:* ${dateLabel}\n📞 *Телефон:* ${phone}`,
+            text: `📝 *${fromName}* (${fromUsername}) заполнил заявку через бота\n\n📍 *Точка:* ${locInfo.name}\n🔧 *Услуга:* ${svcLabel}\n📅 *Дата:* ${dateLabel}\n📞 *Телефон:* ${phone}${sourceTag(source)}`,
             parse_mode: 'Markdown'
           });
         }
@@ -156,10 +186,11 @@ export default async function handler(req, res) {
           text: `✅ Заявка на звонок принята!\n\n📍 ${locInfo.name}\n📞 ${phone}\n\nМы позвоним вам в ближайшее время.`
         });
         if (TELEGRAM_CHAT_ID) {
+          const source = await getSource(chatId);
           await tg(TELEGRAM_BOT_TOKEN, 'sendMessage', {
             chat_id: TELEGRAM_CHAT_ID,
             message_thread_id: TELEGRAM_TOPIC_ID ? parseInt(TELEGRAM_TOPIC_ID) : undefined,
-            text: `📞 *${fromName}* (${fromUsername}) оставил заявку на звонок\n\n📍 *Точка:* ${locInfo.name}\n📞 *Телефон:* ${phone}`,
+            text: `📞 *${fromName}* (${fromUsername}) оставил заявку на звонок\n\n📍 *Точка:* ${locInfo.name}\n📞 *Телефон:* ${phone}${sourceTag(source)}`,
             parse_mode: 'Markdown'
           });
         }
@@ -170,7 +201,11 @@ export default async function handler(req, res) {
     if (!message.text) return res.status(200).json({ ok: true });
     const text = message.text.trim();
 
-    if (text === '/start') {
+    if (text.startsWith('/start')) {
+      const param = text.split(' ')[1];
+      if (param && SOURCES[param]) {
+        await setSource(chatId, SOURCES[param]);
+      }
       await tg(TELEGRAM_BOT_TOKEN, 'sendMessage', {
         chat_id: chatId,
         text: "Здравствуйте! Это Алекс-Авто — экспресс-замена масла в Оренбурге за 30 минут.\n\nНапишите сюда, чем можем помочь, или выберите вариант ниже:",
@@ -183,10 +218,11 @@ export default async function handler(req, res) {
         reply_markup: menuKeyboard()
       });
       if (TELEGRAM_CHAT_ID) {
+        const source = await getSource(chatId);
         await tg(TELEGRAM_BOT_TOKEN, 'sendMessage', {
           chat_id: TELEGRAM_CHAT_ID,
           message_thread_id: TELEGRAM_TOPIC_ID ? parseInt(TELEGRAM_TOPIC_ID) : undefined,
-          text: `💬 *Сообщение боту от клиента*\n\n👤 *От:* ${fromName} (${fromUsername})\n📝 *Текст:* ${text}`,
+          text: `💬 *Сообщение боту от клиента*\n\n👤 *От:* ${fromName} (${fromUsername})\n📝 *Текст:* ${text}${sourceTag(source)}`,
           parse_mode: 'Markdown'
         });
       }

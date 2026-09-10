@@ -26,7 +26,8 @@ export default async function handler(req, res) {
       `🔧 *Услуга:* ${service || 'Не указана'}\n` +
       `📅 *Дата:* ${date || 'Ближайшее время'}\n` +
       `💬 *Комментарий:* ${comment || '—'}\n\n` +
-      `⏱ _Отправлено с сайта aleks-auto.com_`;
+      `⏱ _Отправлено с сайта aleks-auto.com_\n` +
+      `📍 Источник: Сайт`;
 
     const tgUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
     const response = await fetch(tgUrl, {
