@@ -2415,7 +2415,7 @@
           btn.textContent = 'Отправляем...';
           btn.disabled = true;
 
-          fetch('/api/booking', {
+          fetch('https://functions.yandexcloud.net/d4ed91f68nql0bcnq5av', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -2888,7 +2888,7 @@
       mBtnText.textContent = 'Отправка...';
       if (mErrorMsg) mErrorMsg.style.display = 'none';
 
-      fetch('/api/booking', {
+      fetch('https://functions.yandexcloud.net/d4ed91f68nql0bcnq5av', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
