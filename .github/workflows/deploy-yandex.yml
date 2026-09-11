@@ -1,0 +1,32 @@
+name: Deploy to Yandex Object Storage
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'index.html'
+      - 'favicon.svg'
+      - 'logo.webp'
+      - 'robots.txt'
+      - 'sitemap.xml'
+      - '.github/workflows/deploy-yandex.yml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS CLI for Yandex Object Storage
+        run: |
+          aws configure set aws_access_key_id "${{ secrets.YC_ACCESS_KEY_ID }}"
+          aws configure set aws_secret_access_key "${{ secrets.YC_SECRET_ACCESS_KEY }}"
+          aws configure set region ru-central1
+
+      - name: Upload site files to bucket
+        run: |
+          aws s3 cp index.html s3://aleks-auto-site/index.html --endpoint-url=https://storage.yandexcloud.net
+          aws s3 cp favicon.svg s3://aleks-auto-site/favicon.svg --endpoint-url=https://storage.yandexcloud.net
+          aws s3 cp logo.webp s3://aleks-auto-site/logo.webp --endpoint-url=https://storage.yandexcloud.net
+          aws s3 cp robots.txt s3://aleks-auto-site/robots.txt --endpoint-url=https://storage.yandexcloud.net
+          aws s3 cp sitemap.xml s3://aleks-auto-site/sitemap.xml --endpoint-url=https://storage.yandexcloud.net
