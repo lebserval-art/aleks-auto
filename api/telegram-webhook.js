@@ -41,13 +41,41 @@ function sourceTag(source) {
   return source ? `\n📍 Источник: ${source}` : '';
 }
 
+// Состояние многошаговых диалогов кодируем в base64(JSON) и прячем в текст
+// сообщения с ForceReply — Telegram присылает его обратно в reply_to_message.text.
+// Это позволяет передавать произвольный текст (марка авто, название детали
+// на кириллице с пробелами), в отличие от старой схемы key=value на \w+.
+function encodeState(obj) {
+  return Buffer.from(JSON.stringify(obj || {})).toString('base64');
+}
+function decodeState(str) {
+  try { return JSON.parse(Buffer.from(str, 'base64').toString('utf8')); }
+  catch (e) { return {}; }
+}
+function stateAfterTag(repliedText, tag) {
+  const idx = repliedText.indexOf(tag);
+  if (idx === -1) return null;
+  const rest = repliedText.slice(idx + tag.length).trim();
+  return rest ? decodeState(rest) : {};
+}
+function isSkip(text) {
+  const t = text.trim();
+  return t === '-' || /^нет$/i.test(t);
+}
+
 const PHONE_TAG_BOOK = '#запись_на_телефон';
 const PHONE_TAG_CALL = '#звонок_на_телефон';
+const BOOK_CAR_TAG = '#запись_авто';
+const PARTS_CAR_TAG = '#запчасти_авто';
+const PARTS_PART_TAG = '#запчасти_деталь';
+const PARTS_VIN_TAG = '#запчасти_vin';
+const PARTS_PHONE_TAG = '#запчасти_телефон';
 
 function menuKeyboard() {
   return { inline_keyboard: [
     [{ text: '📝 Записаться', callback_data: 'menu:book' }],
-    [{ text: '📞 Заказать звонок', callback_data: 'menu:call' }]
+    [{ text: '📞 Заказать звонок', callback_data: 'menu:call' }],
+    [{ text: '🔧 Подбор запчастей', callback_data: 'menu:parts' }]
   ]};
 }
 function locationKeyboard(prefix) {
@@ -95,8 +123,6 @@ export default async function handler(req, res) {
       const chatId = cq.message.chat.id;
       const messageId = cq.message.message_id;
       const data = cq.data || '';
-      const fromName = [cq.from?.first_name, cq.from?.last_name].filter(Boolean).join(' ') || 'Без имени';
-      const fromUsername = cq.from?.username ? `@${cq.from.username}` : '—';
 
       await tg(TELEGRAM_BOT_TOKEN, 'answerCallbackQuery', { callback_query_id: cq.id });
       const parts = data.split(':');
@@ -110,6 +136,16 @@ export default async function handler(req, res) {
         await tg(TELEGRAM_BOT_TOKEN, 'editMessageText', {
           chat_id: chatId, message_id: messageId, text: 'Из какой точки перезвонить?',
           reply_markup: locationKeyboard('call')
+        });
+      } else if (data === 'menu:parts') {
+        await tg(TELEGRAM_BOT_TOKEN, 'editMessageText', {
+          chat_id: chatId, message_id: messageId,
+          text: 'Подбор и заказ запчастей (Совхозная) — для иномарок.\n\nУкажите марку и модель автомобиля:'
+        });
+        await tg(TELEGRAM_BOT_TOKEN, 'sendMessage', {
+          chat_id: chatId,
+          text: `Напишите марку и модель автомобиля.\n\n${PARTS_CAR_TAG}`,
+          reply_markup: { force_reply: true, input_field_placeholder: 'Например: Toyota Camry' }
         });
       } else if (parts[0] === 'bk' && parts[1] === 'loc') {
         await tg(TELEGRAM_BOT_TOKEN, 'editMessageText', {
@@ -131,17 +167,18 @@ export default async function handler(req, res) {
         });
         await tg(TELEGRAM_BOT_TOKEN, 'sendMessage', {
           chat_id: chatId,
-          text: `Укажите номер телефона, чтобы мы могли связаться и подтвердить запись.\n\n${PHONE_TAG_BOOK} loc=${loc} svc=${svc} date=${date}`,
-          reply_markup: { force_reply: true, input_field_placeholder: '+7 ...' }
+          text: `Укажите марку и модель автомобиля — это поможет подготовить нужные масла и запчасти к визиту. Если не хотите указывать, отправьте "-".\n\n${BOOK_CAR_TAG} ${encodeState({ loc, svc, date })}`,
+          reply_markup: { force_reply: true, input_field_placeholder: 'Например: Toyota Camry, или -' }
         });
       } else if (parts[0] === 'call') {
-        const locInfo = LOCATIONS[parts[1]];
+        const loc = parts[1];
+        const locInfo = LOCATIONS[loc];
         await tg(TELEGRAM_BOT_TOKEN, 'editMessageText', {
           chat_id: chatId, message_id: messageId, text: `📍 ${locInfo.name}\n\nПочти готово!`
         });
         await tg(TELEGRAM_BOT_TOKEN, 'sendMessage', {
           chat_id: chatId,
-          text: `Укажите номер телефона, чтобы мы вам перезвонили.\n\n${PHONE_TAG_CALL} loc=${parts[1]}`,
+          text: `Укажите номер телефона, чтобы мы вам перезвонили.\n\n${PHONE_TAG_CALL} ${encodeState({ loc })}`,
           reply_markup: { force_reply: true, input_field_placeholder: '+7 ...' }
         });
       }
@@ -155,32 +192,52 @@ export default async function handler(req, res) {
     const fromName = [message.from?.first_name, message.from?.last_name].filter(Boolean).join(' ') || 'Без имени';
     const fromUsername = message.from?.username ? `@${message.from.username}` : '—';
 
-    // --- Ответ на запрос телефона (ForceReply) ---
+    // --- Ответы на цепочки ForceReply (запись на сервис / звонок / подбор запчастей) ---
     const repliedText = message.reply_to_message?.text || '';
-    if (message.text && (repliedText.includes(PHONE_TAG_BOOK) || repliedText.includes(PHONE_TAG_CALL))) {
-      const phone = message.text.trim();
-      const params = Object.fromEntries(
-        [...repliedText.matchAll(/(\w+)=(\w+)/g)].map(m => [m[1], m[2]])
-      );
-      const locInfo = LOCATIONS[params.loc];
+    if (message.text && repliedText) {
+      const bookCarState = stateAfterTag(repliedText, BOOK_CAR_TAG);
+      const phoneBookState = stateAfterTag(repliedText, PHONE_TAG_BOOK);
+      const phoneCallState = stateAfterTag(repliedText, PHONE_TAG_CALL);
+      const partsCarState = stateAfterTag(repliedText, PARTS_CAR_TAG);
+      const partsPartState = stateAfterTag(repliedText, PARTS_PART_TAG);
+      const partsVinState = stateAfterTag(repliedText, PARTS_VIN_TAG);
+      const partsPhoneState = stateAfterTag(repliedText, PARTS_PHONE_TAG);
 
-      if (repliedText.includes(PHONE_TAG_BOOK)) {
-        const svcLabel = SERVICES[params.svc] || params.svc;
-        const dateLabel = DATES[params.date] || params.date;
+      if (bookCarState !== null) {
+        const car = isSkip(message.text) ? '' : message.text.trim();
         await tg(TELEGRAM_BOT_TOKEN, 'sendMessage', {
           chat_id: chatId,
-          text: `✅ Заявка принята!\n\n📍 ${locInfo.name}\n🔧 ${svcLabel}\n📅 ${dateLabel}\n📞 ${phone}\n\nМы свяжемся с вами для подтверждения.`
+          text: `Укажите номер телефона, чтобы мы могли связаться и подтвердить запись.\n\n${PHONE_TAG_BOOK} ${encodeState({ ...bookCarState, car })}`,
+          reply_markup: { force_reply: true, input_field_placeholder: '+7 ...' }
+        });
+        return res.status(200).json({ ok: true });
+      }
+
+      if (phoneBookState !== null) {
+        const phone = message.text.trim();
+        const { loc, svc, date, car } = phoneBookState;
+        const locInfo = LOCATIONS[loc];
+        const svcLabel = SERVICES[svc] || svc;
+        const dateLabel = DATES[date] || date;
+        await tg(TELEGRAM_BOT_TOKEN, 'sendMessage', {
+          chat_id: chatId,
+          text: `✅ Заявка принята!\n\n📍 ${locInfo.name}\n🔧 ${svcLabel}\n📅 ${dateLabel}${car ? `\n🚗 ${car}` : ''}\n📞 ${phone}\n\nМы свяжемся с вами для подтверждения.`
         });
         if (TELEGRAM_CHAT_ID) {
           const source = await getSource(chatId);
           await tg(TELEGRAM_BOT_TOKEN, 'sendMessage', {
             chat_id: TELEGRAM_CHAT_ID,
             message_thread_id: TELEGRAM_TOPIC_ID ? parseInt(TELEGRAM_TOPIC_ID) : undefined,
-            text: `📝 *${fromName}* (${fromUsername}) заполнил заявку через бота\n\n📍 *Точка:* ${locInfo.name}\n🔧 *Услуга:* ${svcLabel}\n📅 *Дата:* ${dateLabel}\n📞 *Телефон:* ${phone}${sourceTag(source)}`,
+            text: `📝 *${fromName}* (${fromUsername}) заполнил заявку через бота\n\n📍 *Точка:* ${locInfo.name}\n🔧 *Услуга:* ${svcLabel}\n📅 *Дата:* ${dateLabel}${car ? `\n🚗 *Авто:* ${car}` : ''}\n📞 *Телефон:* ${phone}${sourceTag(source)}`,
             parse_mode: 'Markdown'
           });
         }
-      } else {
+        return res.status(200).json({ ok: true });
+      }
+
+      if (phoneCallState !== null) {
+        const phone = message.text.trim();
+        const locInfo = LOCATIONS[phoneCallState.loc];
         await tg(TELEGRAM_BOT_TOKEN, 'sendMessage', {
           chat_id: chatId,
           text: `✅ Заявка на звонок принята!\n\n📍 ${locInfo.name}\n📞 ${phone}\n\nМы позвоним вам в ближайшее время.`
@@ -194,8 +251,57 @@ export default async function handler(req, res) {
             parse_mode: 'Markdown'
           });
         }
+        return res.status(200).json({ ok: true });
       }
-      return res.status(200).json({ ok: true });
+
+      if (partsCarState !== null) {
+        const car = message.text.trim();
+        await tg(TELEGRAM_BOT_TOKEN, 'sendMessage', {
+          chat_id: chatId,
+          text: `Укажите наименование нужной детали.\n\n${PARTS_PART_TAG} ${encodeState({ car })}`,
+          reply_markup: { force_reply: true, input_field_placeholder: 'Например: тормозные колодки' }
+        });
+        return res.status(200).json({ ok: true });
+      }
+
+      if (partsPartState !== null) {
+        const part = message.text.trim();
+        await tg(TELEGRAM_BOT_TOKEN, 'sendMessage', {
+          chat_id: chatId,
+          text: `Если знаете VIN — укажите, это ускорит подбор. Если не знаете, отправьте "-".\n\n${PARTS_VIN_TAG} ${encodeState({ ...partsPartState, part })}`,
+          reply_markup: { force_reply: true, input_field_placeholder: 'VIN, или -' }
+        });
+        return res.status(200).json({ ok: true });
+      }
+
+      if (partsVinState !== null) {
+        const vin = isSkip(message.text) ? '' : message.text.trim();
+        await tg(TELEGRAM_BOT_TOKEN, 'sendMessage', {
+          chat_id: chatId,
+          text: `Укажите номер телефона для связи.\n\n${PARTS_PHONE_TAG} ${encodeState({ ...partsVinState, vin })}`,
+          reply_markup: { force_reply: true, input_field_placeholder: '+7 ...' }
+        });
+        return res.status(200).json({ ok: true });
+      }
+
+      if (partsPhoneState !== null) {
+        const phone = message.text.trim();
+        const { car, part, vin } = partsPhoneState;
+        await tg(TELEGRAM_BOT_TOKEN, 'sendMessage', {
+          chat_id: chatId,
+          text: `✅ Заявка на подбор запчасти принята!\n\n🚗 ${car}\n🔩 ${part}${vin ? `\n🔑 VIN: ${vin}` : ''}\n📞 ${phone}\n\nМы свяжемся с вами по наличию и цене.`
+        });
+        if (TELEGRAM_CHAT_ID) {
+          const source = await getSource(chatId);
+          await tg(TELEGRAM_BOT_TOKEN, 'sendMessage', {
+            chat_id: TELEGRAM_CHAT_ID,
+            message_thread_id: TELEGRAM_TOPIC_ID ? parseInt(TELEGRAM_TOPIC_ID) : undefined,
+            text: `🔩 *${fromName}* (${fromUsername}) запросил подбор запчасти через бота\n\n🚗 *Авто:* ${car}\n🔩 *Деталь:* ${part}${vin ? `\n🔑 *VIN:* ${vin}` : ''}\n📞 *Телефон:* ${phone}${sourceTag(source)}`,
+            parse_mode: 'Markdown'
+          });
+        }
+        return res.status(200).json({ ok: true });
+      }
     }
 
     if (!message.text) return res.status(200).json({ ok: true });
