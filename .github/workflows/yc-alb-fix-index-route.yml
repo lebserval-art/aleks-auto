@@ -52,15 +52,28 @@ jobs:
         continue-on-error: true
         run: yc alb virtual-host remove-http-route --help
 
-      - name: Apply — not yet wired up
-        if: ${{ inputs.apply }}
-        run: |
-          echo "::warning::apply=true was passed, but the actual 'append-http-route' command"
-          echo "::warning::is intentionally not implemented yet — the exact flag names must first"
-          echo "::warning::be confirmed from the 'Recon — real append-http-route flags' step above."
-          echo "::warning::Nothing was changed on the load balancer by this run."
-
-      - name: Check current response of https://aleks-auto.com/
+      - name: Baseline — response before apply
         run: |
           code=$(curl -sS -o /dev/null -w "%{http_code}" https://aleks-auto.com/ || echo "000")
-          echo "HTTP status for https://aleks-auto.com/: $code"
+          echo "HTTP status for https://aleks-auto.com/ (before): $code"
+
+      - name: Apply — prepend exact-match "/" route ahead of the existing prefix-match route
+        if: ${{ inputs.apply }}
+        run: |
+          yc alb virtual-host prepend-http-route index-exact \
+            --http-router-name aleks-auto-router \
+            --virtual-host-name aleks-auto-vh \
+            --exact-path-match / \
+            --path-prefix-rewrite /index.html \
+            --backend-group-name aleks-auto-bg
+
+      - name: Verify — response after apply must be 200
+        if: ${{ inputs.apply }}
+        run: |
+          sleep 15
+          code=$(curl -sS -o /dev/null -w "%{http_code}" https://aleks-auto.com/ || echo "000")
+          echo "HTTP status for https://aleks-auto.com/ (after): $code"
+          if [ "$code" != "200" ]; then
+            echo "::error::Expected 200 after applying the route, got $code"
+            exit 1
+          fi
