@@ -1,0 +1,51 @@
+name: Verify MAX bot public link
+
+on:
+  workflow_dispatch:
+    inputs:
+      username:
+        description: 'MAX bot username to verify (without @), e.g. id561206765230_bot'
+        type: string
+        required: true
+        default: 'id561206765230_bot'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call MAX Bot API /me with our bot token (confirms OUR bot's real username)
+        continue-on-error: true
+        run: |
+          if [ -z "${{ secrets.MAX_BOT_TOKEN }}" ]; then
+            echo "::warning::MAX_BOT_TOKEN repo secret is not set — skipping authenticated /me check, falling back to public-page check only."
+          else
+            code=$(curl -sS -o /tmp/me.json -w "%{http_code}" \
+              -H "Authorization: ${{ secrets.MAX_BOT_TOKEN }}" \
+              https://platform-api2.max.ru/me)
+            echo "GET /me status: $code"
+            cat /tmp/me.json
+            echo ""
+            me_username=$(node -e "try{console.log(JSON.parse(require('fs').readFileSync('/tmp/me.json','utf8')).username||'')}catch(e){console.log('')}")
+            echo "me_username=$me_username" >> "$GITHUB_OUTPUT"
+            if [ "$me_username" = "${{ inputs.username }}" ]; then
+              echo "::notice::CONFIRMED via authenticated /me: our bot token's username matches '${{ inputs.username }}'."
+            else
+              echo "::warning::/me returned username '$me_username', which does NOT match the requested '${{ inputs.username }}'."
+            fi
+          fi
+        id: me_check
+
+      - name: Fetch public profile page https://max.ru/<username>
+        run: |
+          url="https://max.ru/${{ inputs.username }}"
+          code=$(curl -sSL -o /tmp/page.html -w "%{http_code}" "$url")
+          echo "GET $url status: $code"
+          echo "--- page head/meta (first 4000 bytes) ---"
+          head -c 4000 /tmp/page.html
+          echo ""
+          echo "--- identifying strings found on page ---"
+          grep -io -E '(og:title[^>]*content="[^"]*"|<title>[^<]*</title>|Алекс-Авто[^<"]*|Заявки)' /tmp/page.html || echo "(no obvious identifying string found — inspect the head dump above manually)"
+          if [ "$code" != "200" ]; then
+            echo "::error::Expected HTTP 200 for $url, got $code — link does not resolve."
+            exit 1
+          fi
