@@ -237,6 +237,10 @@ export default async function handler(req, res) {
                 const r = await maxApi('GET', '/me');
                 return res.status(200).json({ step: 'me', status: r.status, body: r.json || r.raw });
         }
+        if (req.query.action === 'list') {
+                const r = await maxApi('GET', '/subscriptions');
+                return res.status(200).json({ step: 'list', status: r.status, body: r.json || r.raw });
+        }
         if (req.query.action === 'subscribe') {
                 const host = req.headers['x-forwarded-host'] || req.headers.host;
                 const webhookUrl = `https://${host}/api/max-webhook`;

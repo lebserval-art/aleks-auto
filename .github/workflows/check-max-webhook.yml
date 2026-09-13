@@ -1,0 +1,25 @@
+name: Check MAX bot webhook status
+
+on:
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: GET /api/max-webhook?action=info (bot identity via /me)
+        run: |
+          code=$(curl -sS -o /tmp/info.json -w "%{http_code}" "https://aleks-auto.com/api/max-webhook?action=info")
+          echo "status: $code"
+          cat /tmp/info.json
+          echo ""
+
+      - name: GET /api/max-webhook?action=list (currently registered webhook subscriptions)
+        run: |
+          code=$(curl -sS -o /tmp/list.json -w "%{http_code}" "https://aleks-auto.com/api/max-webhook?action=list")
+          echo "status: $code"
+          cat /tmp/list.json
+          echo ""
+          echo "--- interpretation ---"
+          echo "Look for a subscription whose \"url\" is https://aleks-auto.com/api/max-webhook."
+          echo "If the subscriptions list is empty, or only has a different/stale URL (e.g. an old preview deployment), that's the bug: MAX has nothing registered to call for this bot, so no update_type (bot_started, message_created, message_callback) will ever reach us regardless of what the user does in the app."
