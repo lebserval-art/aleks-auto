@@ -24,25 +24,33 @@ jobs:
           yc config set folder-id b1g6ldfnpoe441qs0o3m
           rm -f /tmp/yc-key.json
 
-      - name: Recon — yc alb virtual-host get --help
+      - name: Recon — yc alb virtual-host --help (full subcommand list)
         continue-on-error: true
-        run: yc alb virtual-host get --help
-
-      - name: Recon — yc alb virtual-host list --help
-        continue-on-error: true
-        run: yc alb virtual-host list --help
+        run: yc alb virtual-host --help
 
       - name: Recon — yc alb http-router list
         continue-on-error: true
         run: yc alb http-router list
 
-      - name: Recon — yc alb virtual-host list (all vhosts visible in the folder)
+      - name: Recon — yc alb virtual-host list (scoped to aleks-auto-router)
         continue-on-error: true
-        run: yc alb virtual-host list
+        run: yc alb virtual-host list --http-router-name aleks-auto-router
 
-      - name: Recon — real append-http-route flags (do not guess these, read from here)
+      - name: Recon — current aleks-auto-vh config incl. full route list/order
+        continue-on-error: true
+        run: yc alb virtual-host get aleks-auto-vh --http-router-name aleks-auto-router --format json
+
+      - name: Recon — append-http-route --help (route ordering / priority flags?)
         continue-on-error: true
         run: yc alb virtual-host append-http-route --help
+
+      - name: Recon — update-http-route --help (if it exists, may control order)
+        continue-on-error: true
+        run: yc alb virtual-host update-http-route --help
+
+      - name: Recon — remove-http-route --help (if it exists)
+        continue-on-error: true
+        run: yc alb virtual-host remove-http-route --help
 
       - name: Apply — not yet wired up
         if: ${{ inputs.apply }}
