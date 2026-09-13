@@ -24,10 +24,24 @@ jobs:
           yc config set folder-id b1g6ldfnpoe441qs0o3m
           rm -f /tmp/yc-key.json
 
-      - name: Recon — current virtual host config
-        run: yc alb virtual-host get aleks-auto-vh --router-name aleks-auto-router
+      - name: Recon — yc alb virtual-host get --help
+        continue-on-error: true
+        run: yc alb virtual-host get --help
+
+      - name: Recon — yc alb virtual-host list --help
+        continue-on-error: true
+        run: yc alb virtual-host list --help
+
+      - name: Recon — yc alb http-router list
+        continue-on-error: true
+        run: yc alb http-router list
+
+      - name: Recon — yc alb virtual-host list (all vhosts visible in the folder)
+        continue-on-error: true
+        run: yc alb virtual-host list
 
       - name: Recon — real append-http-route flags (do not guess these, read from here)
+        continue-on-error: true
         run: yc alb virtual-host append-http-route --help
 
       - name: Apply — not yet wired up
