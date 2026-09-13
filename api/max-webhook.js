@@ -180,7 +180,13 @@ function mainMenuKeyboard() {
     return [
           [{ type: 'callback', text: '📝 Записаться', payload: 'menu:book' }],
           [{ type: 'callback', text: '📞 Заказать звонок', payload: 'menu:call' }],
+          [{ type: 'callback', text: '🔧 Подбор запчастей', payload: 'menu:parts' }],
         ];
+}
+
+function isSkip(text) {
+    const t = text.trim();
+    return t === '-' || /^нет$/i.test(t);
 }
 
 function locationKeyboard(prefix) {
@@ -277,12 +283,15 @@ export default async function handler(req, res) {
                     await answerCallback(callbackId, `Услуга: ${SERVICES[svc]}\n\nВыберите дату:`, dateKeyboard(loc, svc));
           } else if (payload.startsWith('bk:date:')) {
                     const [, , loc, svc, date] = payload.split(':');
-                    await kvSet(`max:wait:${chatId}`, JSON.stringify({ kind: 'book', loc, svc, date }), 900);
-                    await answerCallback(callbackId, 'Напишите, пожалуйста, номер телефона для связи (например: +7 999 000-00-00)');
+                    await kvSet(`max:wait:${chatId}`, JSON.stringify({ kind: 'book_car', loc, svc, date }), 900);
+                    await answerCallback(callbackId, 'Укажите марку и модель автомобиля — это поможет подготовить нужные масла и запчасти к визиту. Если не хотите указывать, отправьте "-".');
           } else if (payload.startsWith('call:')) {
                     const loc = payload.split(':')[1];
                     await kvSet(`max:wait:${chatId}`, JSON.stringify({ kind: 'call', loc }), 900);
                     await answerCallback(callbackId, `Точка: ${LOCATIONS[loc].name}\n\nНапишите, пожалуйста, номер телефона для связи:`);
+          } else if (payload === 'menu:parts') {
+                    await kvSet(`max:wait:${chatId}`, JSON.stringify({ kind: 'parts_car' }), 900);
+                    await answerCallback(callbackId, 'Подбор и заказ запчастей (Совхозная) — для иномарок.\n\nУкажите марку и модель автомобиля:');
           }
 
           return res.status(200).json({ ok: true });
@@ -309,25 +318,58 @@ export default async function handler(req, res) {
           if (waitingRaw) {
                     const waiting = JSON.parse(waitingRaw);
                     await kvDel(waitKey);
-                    const phone = text;
 
-                if (waiting.kind === 'book') {
+                if (waiting.kind === 'book_car') {
+                            const car = isSkip(text) ? '' : text;
+                            await kvSet(`max:wait:${chatId}`, JSON.stringify({ ...waiting, kind: 'book', car }), 900);
+                            await sendMessage(chatId, 'Укажите номер телефона для связи (например: +7 999 000-00-00)');
+                            return res.status(200).json({ ok: true });
+                } else if (waiting.kind === 'book') {
+                            const phone = text;
                             const locInfo = LOCATIONS[waiting.loc];
                             const svcLabel = SERVICES[waiting.svc];
                             const dateLabel = DATES[waiting.date];
+                            const car = waiting.car;
                             await sendMessage(
                                           chatId,
-                                          `✅ Заявка принята!\n📍 ${locInfo.name}\n🔧 ${svcLabel}\n📅 ${dateLabel}\n📞 ${phone}\n\nМы свяжемся с вами для подтверждения.`
+                                          `✅ Заявка принята!\n📍 ${locInfo.name}\n🔧 ${svcLabel}\n📅 ${dateLabel}${car ? `\n🚗 ${car}` : ''}\n📞 ${phone}\n\nМы свяжемся с вами для подтверждения.`
                                         );
                             await notifyAdmin(
                                           `📝 ${fromName} (${fromUsername}) заполнил заявку через MAX-бота\n\n` +
-                                            `📍 Точка: ${locInfo.name}\n🔧 Услуга: ${svcLabel}\n📅 Дата: ${dateLabel}\n📞 Телефон: ${phone}`
+                                            `📍 Точка: ${locInfo.name}\n🔧 Услуга: ${svcLabel}\n📅 Дата: ${dateLabel}${car ? `\n🚗 Авто: ${car}` : ''}\n📞 Телефон: ${phone}`
                                         );
                 } else if (waiting.kind === 'call') {
+                            const phone = text;
                             const locInfo = LOCATIONS[waiting.loc];
                             await sendMessage(chatId, `✅ Заявка на звонок принята!\n📍 ${locInfo.name}\n📞 ${phone}\n\nМы перезвоним вам в рабочее время.`);
                             await notifyAdmin(
                                           `📞 ${fromName} (${fromUsername}) оставил заявку на звонок через MAX\n\n📍 Точка: ${locInfo.name}\n📞 Телефон: ${phone}`
+                                        );
+                } else if (waiting.kind === 'parts_car') {
+                            const car = text;
+                            await kvSet(`max:wait:${chatId}`, JSON.stringify({ kind: 'parts_part', car }), 900);
+                            await sendMessage(chatId, 'Укажите наименование нужной детали:');
+                            return res.status(200).json({ ok: true });
+                } else if (waiting.kind === 'parts_part') {
+                            const part = text;
+                            await kvSet(`max:wait:${chatId}`, JSON.stringify({ ...waiting, kind: 'parts_vin', part }), 900);
+                            await sendMessage(chatId, 'Если знаете VIN — укажите, это ускорит подбор. Если не знаете, отправьте "-".');
+                            return res.status(200).json({ ok: true });
+                } else if (waiting.kind === 'parts_vin') {
+                            const vin = isSkip(text) ? '' : text;
+                            await kvSet(`max:wait:${chatId}`, JSON.stringify({ ...waiting, kind: 'parts_phone', vin }), 900);
+                            await sendMessage(chatId, 'Укажите номер телефона для связи:');
+                            return res.status(200).json({ ok: true });
+                } else if (waiting.kind === 'parts_phone') {
+                            const phone = text;
+                            const { car, part, vin } = waiting;
+                            await sendMessage(
+                                          chatId,
+                                          `✅ Заявка на подбор запчасти принята!\n🚗 ${car}\n🔩 ${part}${vin ? `\n🔑 VIN: ${vin}` : ''}\n📞 ${phone}\n\nМы свяжемся с вами по наличию и цене.`
+                                        );
+                            await notifyAdmin(
+                                          `🔩 ${fromName} (${fromUsername}) запросил подбор запчасти через MAX\n\n` +
+                                            `🚗 Авто: ${car}\n🔩 Деталь: ${part}${vin ? `\n🔑 VIN: ${vin}` : ''}\n📞 Телефон: ${phone}`
                                         );
                 }
                     return res.status(200).json({ ok: true });
