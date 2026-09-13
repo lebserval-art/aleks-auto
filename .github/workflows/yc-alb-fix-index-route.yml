@@ -1,0 +1,44 @@
+name: Yandex ALB - fix "/" AccessDenied (recon + route)
+
+on:
+  workflow_dispatch:
+    inputs:
+      apply:
+        description: 'Apply the new route (unchecked = recon only, prints current config + real --help flags, changes nothing)'
+        type: boolean
+        default: false
+
+jobs:
+  alb-index-route:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install yc CLI
+        run: |
+          curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
+          echo "$HOME/yandex-cloud/bin" >> "$GITHUB_PATH"
+
+      - name: Authenticate
+        run: |
+          echo '${{ secrets.YC_SA_KEY_JSON }}' > /tmp/yc-key.json
+          yc config set service-account-key /tmp/yc-key.json
+          yc config set folder-id b1g6ldfnpoe441qs0o3m
+          rm -f /tmp/yc-key.json
+
+      - name: Recon — current virtual host config
+        run: yc alb virtual-host get aleks-auto-vh --router-name aleks-auto-router
+
+      - name: Recon — real append-http-route flags (do not guess these, read from here)
+        run: yc alb virtual-host append-http-route --help
+
+      - name: Apply — not yet wired up
+        if: ${{ inputs.apply }}
+        run: |
+          echo "::warning::apply=true was passed, but the actual 'append-http-route' command"
+          echo "::warning::is intentionally not implemented yet — the exact flag names must first"
+          echo "::warning::be confirmed from the 'Recon — real append-http-route flags' step above."
+          echo "::warning::Nothing was changed on the load balancer by this run."
+
+      - name: Check current response of https://aleks-auto.com/
+        run: |
+          code=$(curl -sS -o /dev/null -w "%{http_code}" https://aleks-auto.com/ || echo "000")
+          echo "HTTP status for https://aleks-auto.com/: $code"
