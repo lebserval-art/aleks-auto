@@ -9,6 +9,7 @@ on:
       - 'logo.webp'
       - 'robots.txt'
       - 'sitemap.xml'
+      - 'bonus/index.html'
       - '.github/workflows/deploy-yandex.yml'
 
 jobs:
@@ -30,3 +31,7 @@ jobs:
           aws s3 cp logo.webp s3://aleks-auto-site/logo.webp --endpoint-url=https://storage.yandexcloud.net
           aws s3 cp robots.txt s3://aleks-auto-site/robots.txt --endpoint-url=https://storage.yandexcloud.net
           aws s3 cp sitemap.xml s3://aleks-auto-site/sitemap.xml --endpoint-url=https://storage.yandexcloud.net
+          # Страница /bonus (QR на сервисных карточках). Бакет отдаётся через ALB без index-документа,
+          # поэтому кладём и bonus/index.html, и ключ "bonus" (для адреса aleks-auto.com/bonus).
+          aws s3 cp bonus/index.html s3://aleks-auto-site/bonus/index.html --content-type "text/html; charset=utf-8" --endpoint-url=https://storage.yandexcloud.net
+          aws s3 cp bonus/index.html s3://aleks-auto-site/bonus --content-type "text/html; charset=utf-8" --endpoint-url=https://storage.yandexcloud.net
