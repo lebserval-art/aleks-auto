@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>Клубная скидка 5% | Алекс-Авто Оренбург</title>
+  <meta name="description" content="Активируйте клубную скидку 5% на замену масла и ТО в сервисах Алекс-Авто в Оренбурге.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: #131b2e;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --tg-color: #229ED9;
+      --vk-color: #0077FF;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: #1e293b;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+      -webkit-font-smoothing: antialiased;
+    }
+    .container {
+      width: 100%;
+      max-width: 440px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 32px 24px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(37, 99, 235, 0.15);
+      color: #60a5fa;
+      border: 1px solid rgba(37, 99, 235, 0.3);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      letter-spacing: 0.5px;
+    }
+    h1 {
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 1.3;
+      margin-bottom: 8px;
+    }
+    h1 span {
+      color: #38bdf8;
+    }
+    .subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 28px;
+    }
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+      padding: 16px 20px;
+      border-radius: 16px;
+      font-size: 16px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .btn-tg {
+      background: linear-gradient(135deg, #0088cc 0%, #00a2e8 100%);
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(0, 136, 204, 0.35);
+    }
+    .btn-tg:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(0, 136, 204, 0.45);
+    }
+    .btn-vk {
+      background: #1e293b;
+      color: #e2e8f0;
+      border: 1px solid #334155;
+    }
+    .btn-vk:hover {
+      background: #334155;
+      color: #fff;
+    }
+    .btn-sub {
+      display: block;
+      font-size: 11px;
+      font-weight: 400;
+      opacity: 0.85;
+      margin-top: 2px;
+    }
+    .btn-text {
+      text-align: left;
+    }
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin-bottom: 24px;
+    }
+    .locations {
+      text-align: left;
+    }
+    .locations-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      font-weight: 700;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+    .loc-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .loc-info {
+      font-size: 13px;
+    }
+    .loc-name {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+    .loc-address {
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+    .loc-phone {
+      color: #38bdf8;
+      font-weight: 600;
+      font-size: 13px;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .footer {
+      margin-top: 24px;
+      font-size: 12px;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="badge">КЛУБНАЯ КАРТА</div>
+    <h1>Ваша скидка <span>5%</span><br>на замену масла и ТО</h1>
+    <p class="subtitle">Выберите удобную площадку, чтобы сохранить скидку, задать вопрос мастеру или записаться без очереди:</p>
+
+    <div class="actions">
+      <!-- Telegram (Основной) -->
+      <a href="https://t.me/aleks_auto_ru" target="_blank" class="btn btn-tg">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.52 2.77-1.16 3.35-1.36 3.73-1.37.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/>
+        </svg>
+        <div class="btn-text">
+          <div>Перейти в Telegram</div>
+          <span class="btn-sub">Быстрая запись, чат с мастером</span>
+        </div>
+      </a>
+
+      <!-- VK (Альтернатива) -->
+      <a href="https://vk.ru/aleks_auto" target="_blank" class="btn btn-vk">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M15.07 2H8.93C4.33 2 2 4.33 2 8.93v6.14C2 19.67 4.33 22 8.93 22h6.14c4.6 0 6.93-2.33 6.93-6.93V8.93C22 4.33 19.67 2 15.07 2zm3.39 13.91h-1.63c-.62 0-.81-.49-1.92-1.6-.97-.94-1.4-1.06-1.64-1.06-.34 0-.44.1-.44.57v1.46c0 .4-.13.63-1.18.63-1.74 0-3.67-1.06-5.03-3.03-2.06-2.92-2.63-5.12-2.63-5.57 0-.25.1-.48.58-.48h1.63c.43 0 .59.2.76.67.83 2.41 2.22 4.53 2.8 4.53.22 0 .32-.1.32-.65V9.4c-.07-1.17-.68-1.27-.68-1.69 0-.2.17-.4.43-.4h2.56c.36 0 .49.19.49.62v3.35c0 .36.16.49.27.49.22 0 .4-.13.81-.54 1.25-1.4 2.14-3.56 2.14-3.56.12-.25.32-.47.75-.47h1.63c.49 0 .6.25.49.62-.2 1-2.12 3.65-2.22 3.8-.18.29-.25.42 0 .75.18.25.77.75 1.17 1.21 1.05 1.18 1.48 1.77 1.48 2.23 0 .25-.22.49-.69.49z"/>
+        </svg>
+        <div class="btn-text">
+          <div>Мы ВКонтакте</div>
+          <span class="btn-sub">Без VPN, акции и отзывы</span>
+        </div>
+      </a>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="locations">
+      <div class="locations-title">Наши сервисы в Оренбурге</div>
+      <div class="loc-card">
+        <div class="loc-info">
+          <div class="loc-name">ТРЦ «Армада 2»</div>
+          <div class="loc-address">пр. Гагарина, 58/1В</div>
+        </div>
+        <a href="tel:+73532424050" class="loc-phone">+7 (3532) 42-40-50</a>
+      </div>
+      <div class="loc-card">
+        <div class="loc-info">
+          <div class="loc-name">ТРЦ «КИТ»</div>
+          <div class="loc-address">ул. Салмышская, 71 ст3</div>
+        </div>
+        <a href="tel:+73532922050" class="loc-phone">+7 (3532) 92-20-50</a>
+      </div>
+    </div>
+
+    <div class="footer">
+      Работаем ежедневно с 9:00 до 21:00<br>
+      Сеть сервисов «Алекс-Авто»
+    </div>
+  </div>
+</body>
+</html>
