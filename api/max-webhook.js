@@ -515,8 +515,9 @@ export default async function handler(req, res) {
 
           // Свободное сообщение: пересылаем менеджеру (с ID для ответа), клиенту — автоответ + меню
           await notifyAdmin(`💬 ${fromLabel} написал в MAX-боте:\n\n${text || '[вложение или стикер без текста]'}`, chatId);
-          // Автоответ не чаще раза в 30 минут и не во время диалога с менеджером
-          if (await kvSetNx(`max:auto:${chatId}`, 1800)) {
+          // Автоответ на каждое сообщение клиента; серия сообщений подряд (в пределах 20 секунд) получает один ответ.
+          // (Если менеджер ответил через бота, автоответ на 6 часов отключается — см. ветку группы выше.)
+          if (await kvSetNx(`max:auto:${chatId}`, 20)) {
                     await sendMessage(chatId, WORKING_HOURS_TEXT, mainMenuKeyboard());
           }
           return res.status(200).json({ ok: true });
