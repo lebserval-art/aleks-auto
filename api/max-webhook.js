@@ -255,10 +255,10 @@ function dateKeyboard(loc, svc) {
 const WELCOME_TEXT =
     'Здравствуйте! Это Алекс-Авто — экспресс-замена масла в Оренбурге за 30 минут.\n\nЧто хотите сделать?';
 
-const WORKING_HOURS_TEXT =
-    'Здравствуйте! Это бот Алекс-Авто — в чате он вопросы не обсуждает.\n\n' +
-    'Чтобы получить ответ, нажмите «Записаться» или «Заказать звонок» ниже — мы свяжемся с вами по телефону. ' +
-    'Или позвоните сами (ежедневно с 09:00 до 21:00):\n\n' +
+const ASK_PHONE_TEXT =
+    'Здравствуйте! Это Алекс-Авто. Чтобы мы могли вам помочь, напишите номер телефона — мы перезвоним в рабочее время (ежедневно с 09:00 до 21:00).\n\n' +
+    'Например: +7 900 123-45-67\n\n' +
+    'Или выберите действие ниже. Позвонить самим:\n' +
     `${LOCATIONS.a.name}: ${LOCATIONS.a.phone}\n${LOCATIONS.k.name}: ${LOCATIONS.k.phone}`;
 
 // clientChatId дописывается строкой «ID: …» — по ней бот понимает, кому переслать ответ менеджера.
@@ -428,7 +428,7 @@ export default async function handler(req, res) {
                     };
                     const needPhone = async () => {
                               await keepWaiting();
-                              if (text && looksLikeQuestion(text)) await forwardQuestion();
+                              if (text && (looksLikeQuestion(text) || waiting.kind === 'call_free')) await forwardQuestion();
                               await sendMessage(chatId, 'Не получилось распознать номер. Пожалуйста, укажите телефон в формате +7 900 123-45-67.\n\nЕсли хотите задать вопрос, просто напишите его — я передам менеджеру, но для заявки нужен номер. Вернуться в меню: напишите «меню».');
                               return res.status(200).json({ ok: true });
                     };
@@ -479,6 +479,16 @@ export default async function handler(req, res) {
                                             `📞 ${fromLabel} оставил заявку на звонок через MAX\n\n📍 Точка: ${locInfo.name}\n📞 Телефон: ${phone}`,
                                             chatId
                                           );
+                    } else if (waiting.kind === 'call_free') {
+                              const phone = normalizePhone(text);
+                              if (!phone) return needPhone();
+                              await kvDel(waitKey);
+                              await sendMessage(chatId, `✅ Спасибо! Заявка на звонок принята.\n📞 ${phone}\n\nМы перезвоним вам в рабочее время (ежедневно с 09:00 до 21:00).`, mainMenuKeyboard());
+                              await notifyAdmin(
+                                            `📞 ${fromLabel} просит перезвонить через MAX\n\n` +
+                                              `💬 Сообщение: ${waiting.msg || '—'}\n📞 Телефон: ${phone}`,
+                                            chatId
+                                          );
                     } else if (waiting.kind === 'parts_car') {
                               if (!text || looksLikeQuestion(text)) return needCar();
                               await kvSet(waitKey, JSON.stringify({ kind: 'parts_part', car: text }), 900);
@@ -515,11 +525,9 @@ export default async function handler(req, res) {
 
           // Свободное сообщение: пересылаем менеджеру (с ID для ответа), клиенту — автоответ + меню
           await notifyAdmin(`💬 ${fromLabel} написал в MAX-боте:\n\n${text || '[вложение или стикер без текста]'}`, chatId);
-          // Автоответ на каждое сообщение клиента; серия сообщений подряд (в пределах 20 секунд) получает один ответ.
-          // (Если менеджер ответил через бота, автоответ на 6 часов отключается — см. ветку группы выше.)
-          if (await kvSetNx(`max:auto:${chatId}`, 20)) {
-                    await sendMessage(chatId, WORKING_HOURS_TEXT, mainMenuKeyboard());
-          }
+          // Просим оставить телефон и считаем следующее сообщение номером (заявка на звонок)
+          await kvSet(waitKey, JSON.stringify({ kind: 'call_free', msg: (text || '[вложение или стикер без текста]').slice(0, 300) }), 3600);
+          await sendMessage(chatId, ASK_PHONE_TEXT, mainMenuKeyboard());
           return res.status(200).json({ ok: true });
       }
 
