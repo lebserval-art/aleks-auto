@@ -1652,6 +1652,19 @@
   .promo-banner__desc { font-size: 0.78rem; color: rgba(13,13,13,0.75); font-weight: 600; letter-spacing: 0.04em; }
   .promo-banner__text { font-size: 0.78rem; color: rgba(13,13,13,0.85); font-weight: 600; }
   .promo-banner__text strong { color: #0D0D0D; font-weight: 700; }
+  .promo-banner__links { display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
+  .promo-banner__links a {
+    background: #0D0D0D;
+    color: var(--oil);
+    font-weight: 700;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    padding: 6px 12px;
+    border-radius: 2px;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .promo-banner__note { flex-basis: 100%; font-size: 0.68rem; color: rgba(13,13,13,0.75); font-weight: 600; line-height: 1.4; }
   .promo-banner__cta {
     background: #0D0D0D;
     color: var(--oil);
@@ -1989,10 +2002,22 @@
     </div>
   </div>
   <div class="promo-banner__item">
+    <span class="promo-banner__icon promo-banner__icon--sm">🔔</span>
+    <div class="promo-banner__text">
+      <strong>Скидка 5% подписчикам — навсегда</strong><br>
+      Подпишитесь на наш Telegram-канал или группу ВКонтакте и получайте постоянную скидку 5% на весь чек. Покажите подписку мастеру при расчёте.
+      <div class="promo-banner__links">
+        <a href="https://t.me/aleks_auto_ru" target="_blank" rel="noopener">Telegram</a>
+        <a href="https://vk.com/aleks_auto" target="_blank" rel="noopener">ВКонтакте</a>
+      </div>
+    </div>
+  </div>
+  <div class="promo-banner__item">
     <span class="promo-banner__icon promo-banner__icon--sm">⭐</span>
     <div class="promo-banner__text">Скидка 5% за отзыв →<br><strong>на Яндекс Картах или в 2ГИС</strong></div>
   </div>
   <a href="javascript:void(0)" onclick="openReviewModal()" class="promo-banner__cta">Воспользоваться →</a>
+  <div class="promo-banner__note">Скидка 5% действует на весь чек (работы и товары) и не суммируется с другими скидками, в том числе со скидкой за отзыв. Подробности у мастера-приёмщика.</div>
 </div>
 
 <!-- SERVICES -->
@@ -2058,7 +2083,7 @@
         <li><span class="price-label">Воздушный / салонный фильтр</span><span class="price-value">от 400 ₽</span></li>
         <li><span class="price-label">Топливный фильтр</span><span class="price-value">от 400 ₽</span></li>
         <li><span class="price-label">Охлаждающая жидкость (с промывкой 2 000 ₽)</span><span class="price-value">от 1 200 ₽</span></li>
-        <li><span class="price-label">Жидкость ГУР / ЭУР</span><span class="price-value">от 1 200 ₽</span></li>
+        <li><span class="price-label">Жидкость ГУР / ЭУР</span><span class="price-value">от 1 300 ₽</span></li>
         <li><span class="price-label">Тормозная жидкость</span><span class="price-value">от 1 200 ₽</span></li>
         <li><span class="price-label">Промывка ДВС</span><span class="price-value">от 300 ₽</span></li>
       </ul>
@@ -2076,7 +2101,7 @@
         <li><span class="price-label">Муфта Haldex Geely</span><span class="price-value">от 2 000 ₽</span></li>
         <li><span class="price-label">Муфта Haldex Kia / Hyundai</span><span class="price-value">от 4 500 ₽</span></li>
       </ul>
-      <div class="service-price">от 1 000 ₽ <span>свечи / колодки</span></div>
+      <div class="service-price">свечи от 1 000 ₽ <span>· колодки от 1 250 ₽</span></div>
     </div>
   </div>
 </section>
@@ -2304,6 +2329,10 @@
       <summary>Не знаю, какое масло подходит моей машине — поможете определиться?</summary>
       <div class="faq-a">Да, подберём масло и расходники по допускам конкретно вашего автомобиля — просто укажите марку и модель при записи или звонке.</div>
     </details>
+    <details class="faq-item">
+      <summary>Как получить скидку 5% подписчика?</summary>
+      <div class="faq-a">Подпишитесь на наш Telegram-канал или группу ВКонтакте и покажите подписку мастеру-приёмщику при расчёте. Скидка 5% постоянная, действует на каждом визите на весь чек (работы и товары). Со скидкой за отзыв не суммируется: действует одна скидка 5%.</div>
+    </details>
   </div>
 </section>
 
@@ -2341,7 +2370,23 @@
                 <path d="M15.5 21.5L20.5 24.5L18.5 30.5L15.5 21.5Z" fill="#C8DAEA"/>
                 <path d="M20.5 24.5L24.5 30.5L31.5 12.5L20.5 24.5Z" fill="white" opacity="0.7"/>
               </svg>
-              <span style="font-size:0.72rem; color:var(--muted); font-weight:600;">Telegram</span>
+              <span style="font-size:0.72rem; color:var(--muted); font-weight:600;">Telegram-бот</span>
+            </a>
+            <a href="https://t.me/aleks_auto_ru" target="_blank" rel="noopener" title="Telegram-канал: скидка 5% подписчикам" style="display:flex; flex-direction:column; align-items:center; gap:5px; text-decoration:none;">
+              <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="42" height="42" rx="10" fill="#2AABEE"/>
+                <path d="M9.5 20.5L31.5 12.5L24.5 30.5L20.5 24.5L15.5 21.5L9.5 20.5Z" fill="white"/>
+                <path d="M15.5 21.5L20.5 24.5L18.5 30.5L15.5 21.5Z" fill="#C8DAEA"/>
+                <path d="M20.5 24.5L24.5 30.5L31.5 12.5L20.5 24.5Z" fill="white" opacity="0.7"/>
+              </svg>
+              <span style="font-size:0.72rem; color:var(--muted); font-weight:600;">Telegram-канал (−5%)</span>
+            </a>
+            <a href="https://vk.com/aleks_auto" target="_blank" rel="noopener" title="ВКонтакте: скидка 5% подписчикам" style="display:flex; flex-direction:column; align-items:center; gap:5px; text-decoration:none;">
+              <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="42" height="42" rx="10" fill="#0077FF"/>
+                <text x="21" y="27" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="white">VK</text>
+              </svg>
+              <span style="font-size:0.72rem; color:var(--muted); font-weight:600;">ВКонтакте (−5%)</span>
             </a>
             <a href="https://max.ru/id561206765230_bot" target="_blank" title="Написать в Макс" style="display:flex; flex-direction:column; align-items:center; gap:5px; text-decoration:none;">
               <svg width="42" height="42" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -2663,7 +2708,27 @@
             <path d="M15.5 21.5L20.5 24.5L18.5 30.5L15.5 21.5Z" fill="#C8DAEA"/>
             <path d="M20.5 24.5L24.5 30.5L31.5 12.5L20.5 24.5Z" fill="white" opacity="0.7"/>
           </svg>
-          Telegram
+          Telegram-бот
+        </a>
+      </li>
+      <li style="display:flex; align-items:center; gap:8px; padding-top:4px;">
+        <a href="https://t.me/aleks_auto_ru" target="_blank" rel="noopener" title="Telegram-канал" style="display:flex; align-items:center; gap:8px; text-decoration:none; color:var(--muted);">
+          <svg width="26" height="26" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="42" height="42" rx="10" fill="#2AABEE"/>
+            <path d="M9.5 20.5L31.5 12.5L24.5 30.5L20.5 24.5L15.5 21.5L9.5 20.5Z" fill="white"/>
+            <path d="M15.5 21.5L20.5 24.5L18.5 30.5L15.5 21.5Z" fill="#C8DAEA"/>
+            <path d="M20.5 24.5L24.5 30.5L31.5 12.5L20.5 24.5Z" fill="white" opacity="0.7"/>
+          </svg>
+          Telegram-канал
+        </a>
+      </li>
+      <li style="display:flex; align-items:center; gap:8px; padding-top:4px;">
+        <a href="https://vk.com/aleks_auto" target="_blank" rel="noopener" title="ВКонтакте" style="display:flex; align-items:center; gap:8px; text-decoration:none; color:var(--muted);">
+          <svg width="26" height="26" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="42" height="42" rx="10" fill="#0077FF"/>
+            <text x="21" y="27" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="white">VK</text>
+          </svg>
+          ВКонтакте
         </a>
       </li>
       <li style="display:flex; align-items:center; gap:8px; padding-top:4px;">
@@ -3018,6 +3083,7 @@
  <button class="rev-modal__close" onclick="closeReviewModal()" aria-label="Закрыть">&times;</button>
  <div class="rev-modal__title">Получите скидку 5% за отзыв</div>
  <div class="rev-modal__subtitle">Выберите филиал, в котором вы обслуживались:</div>
+ <div class="rev-modal__subtitle" style="margin-top:-12px; font-size:12px;">Скидка 5% единая: со скидкой подписчика не суммируется.</div>
 
  <div class="rev-modal__branches">
  <!-- Филиал 1 -->
